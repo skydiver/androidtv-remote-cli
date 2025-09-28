@@ -12,6 +12,10 @@ const sendKeyCommand = (
   return `${label} command sent.`;
 };
 
+export function homeCommand(remote: AndroidRemote): string {
+  return sendKeyCommand(remote, RemoteKeyCode.KEYCODE_HOME, 'Home');
+}
+
 export function muteCommand(remote: AndroidRemote): string {
   return sendKeyCommand(remote, RemoteKeyCode.KEYCODE_VOLUME_MUTE, 'Mute');
 }

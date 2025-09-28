@@ -2,6 +2,7 @@ import AppStorage from 'appstoragejs';
 import { AndroidRemote } from './lib/androidtv-remote';
 import MenuUI, { type MenuAction, type MenuItem } from './ui/menu';
 import {
+  homeCommand,
   enterCommand,
   exitCommand,
   muteCommand,
@@ -32,6 +33,7 @@ const androidRemote = new AndroidRemote(settings.host, options);
 const menuItems: MenuItem[] = [
   { label: 'Mute', action: 'mute' },
   { label: 'Power', action: 'power' },
+  { label: 'Home', action: 'home' },
   { label: 'Enter', action: 'enter' },
   { label: 'D-pad Controls', action: 'dpad' },
   { label: 'Exit', action: 'exit' },
@@ -72,6 +74,8 @@ async function handleMenuAction(action: MenuAction): Promise<string | void> {
       return muteCommand(androidRemote);
     case 'power':
       return powerCommand(androidRemote);
+    case 'home':
+      return homeCommand(androidRemote);
     case 'dpad':
       dpadMode?.start();
       return;
