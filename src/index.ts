@@ -1,6 +1,7 @@
 import AppStorage from 'appstoragejs';
-import { AndroidRemote, RemoteDirection, RemoteKeyCode } from './lib/androidtv-remote';
+import { AndroidRemote } from './lib/androidtv-remote';
 import MenuUI, { type MenuAction, type MenuItem } from './ui/menu';
+import { exitCommand, muteCommand, powerCommand } from './ui/menu-commands';
 
 /*****************************************************************************
  * Initialize Settings Storage
@@ -47,19 +48,16 @@ function exitApp() {
 
 async function handleMenuAction(action: MenuAction): Promise<string | void> {
   if (action === 'exit') {
-    menu.setStatus('Closing remote...');
-    exitApp();
+    exitCommand(menu, exitApp);
     return;
   }
 
   if (action === 'mute') {
-    androidRemote.sendKey(RemoteKeyCode.KEYCODE_VOLUME_MUTE, RemoteDirection.SHORT);
-    return 'Mute command sent.';
+    return muteCommand(androidRemote);
   }
 
   if (action === 'power') {
-    androidRemote.sendPower();
-    return 'Power toggle sent.';
+    return powerCommand(androidRemote);
   }
 }
 
