@@ -6,7 +6,6 @@ import {
   dpadLeftCommand,
   dpadRightCommand,
   dpadUpCommand,
-  enterCommand,
   selectCommand,
   muteCommand,
   volumeDownCommand,
@@ -58,13 +57,13 @@ class DpadModeController {
       '│       <   ○   >          │',
       '│           v              │',
       '├──────────┬───────────────┤',
-      '│ SPACE -> │ Enter key     │',
-      '│ BACK    │ Backspace key  │',
+      '│ 🎯 Select│ Space key     │',
+      '│ 🔙 Back  │ Backspace key │',
       '├──────────┼───────────────┤',
-      '│ VOLUME ↑ │ + key         │',
-      '│ VOLUME ↓ │ - key         │',
-      '│ MUTE     │ m key         │',
-      '│ HOME     │ h key         │',
+      '│ 🔊 Vol ↑ │ + key         │',
+      '│ 🔉 Vol ↓ │ - key         │',
+      '│ 🔇 Mute  │ m key         │',
+      '│ 🏠 Home  │ h key         │',
       '├──────────┴───────────────┤',
       '│ ESC returns to menu      │',
       '│ Ctrl+C exits app         │',
@@ -89,7 +88,7 @@ class DpadModeController {
 
       if (key.name === 'backspace') {
         if (isDebugMode()) {
-          console.log('↩ Back');
+          console.log('🔙 Back');
         }
         backCommand(this.options.remote);
         return;
@@ -154,23 +153,16 @@ class DpadModeController {
           break;
         case 'space':
           if (isDebugMode()) {
-            console.log('␠ Enter command');
-          }
-          enterCommand(this.options.remote);
-          break;
-        case 'return':
-        case 'enter':
-          if (isDebugMode()) {
-            console.log('⏎ Select command');
+            console.log('🎯 Select command');
           }
           selectCommand(this.options.remote);
           break;
         default:
           if (key.sequence === ' ') {
             if (isDebugMode()) {
-              console.log('␠ Enter command');
+              console.log('🎯 Select command');
             }
-            enterCommand(this.options.remote);
+            selectCommand(this.options.remote);
           }
           break;
       }
