@@ -31,11 +31,11 @@ const options = {
 const androidRemote = new AndroidRemote(settings.host, options);
 
 const menuItems: MenuItem[] = [
+  { label: '🎮  D-pad Controls', action: 'dpad' },
+  { label: '🏠  Home', action: 'home' },
   { label: '🔇  Mute', action: 'mute' },
   { label: '🔌  Power', action: 'power' },
-  { label: '🏠  Home', action: 'home' },
   { label: '🐞  Debug', action: 'debug' },
-  { label: '🎮  D-pad Controls', action: 'dpad' },
   { label: '🚪  Exit', action: 'exit' },
 ];
 
