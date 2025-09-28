@@ -1,16 +1,7 @@
 import readline from 'readline';
 import enquirer from 'enquirer';
 
-export type MenuAction =
-  | 'mute'
-  | 'power'
-  | 'dpad-up'
-  | 'dpad-down'
-  | 'dpad-left'
-  | 'dpad-right'
-  | 'enter'
-  | 'select'
-  | 'exit';
+export type MenuAction = 'mute' | 'power' | 'dpad' | 'enter' | 'select' | 'exit';
 
 export type MenuItem = {
   label: string;
