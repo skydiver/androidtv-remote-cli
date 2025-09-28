@@ -1,0 +1,53 @@
+{
+  "name": "typescript-starter",
+  "version": "1.0.0",
+  "description": "Yet another TypeScript starter template",
+  "license": "MIT",
+  "author": {
+    "name": "Martín M.",
+    "url": "https://github.com/skydiver/"
+  },
+  "type": "module",
+  "main": "build/bundle.js",
+  "scripts": {
+    "build": "pnpm clean && tsx esbuild.config.ts && chmod +x build/bundle.js",
+    "clean": "rimraf build",
+    "dev": "tsx watch src/index.ts",
+    "lint:check": "biome check .",
+    "lint:fix": "biome check --fix .",
+    "lint:format": "biome format --write .",
+    "start": "tsx src/index.ts",
+    "test": "vitest src",
+    "test:coverage": "vitest run --coverage"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "@tsconfig/node22": "^22.0.1",
+    "@types/node": "^22.14.1",
+    "@vitest/coverage-v8": "^3.1.2",
+    "dotenv": "^16.5.0",
+    "esbuild": "^0.25.2",
+    "globals": "^16.0.0",
+    "rimraf": "^6.0.1",
+    "tsc-alias": "^1.8.15",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.3",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^3.1.2"
+  },
+  "packageManager": "pnpm@10.0.0",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "volta": {
+    "node": "22.13.1",
+    "pnpm": "10.0.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild"]
+  },
+  "dependencies": {
+    "androidtv-remote": "^1.0.10",
+    "appstoragejs": "^1.0.4"
+  }
+}
