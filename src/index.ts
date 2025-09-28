@@ -3,7 +3,6 @@ import { AndroidRemote } from './lib/androidtv-remote';
 import MenuUI, { type MenuAction, type MenuItem } from './ui/menu';
 import {
   homeCommand,
-  enterCommand,
   exitCommand,
   muteCommand,
   powerCommand,
@@ -36,7 +35,6 @@ const menuItems: MenuItem[] = [
   { label: '🔌  Power', action: 'power' },
   { label: '🏠  Home', action: 'home' },
   { label: '🐞  Debug', action: 'debug' },
-  { label: '⏎  Enter', action: 'enter' },
   { label: '🎮  D-pad Controls', action: 'dpad' },
   { label: '🚪  Exit', action: 'exit' },
 ];
@@ -100,8 +98,6 @@ async function handleMenuAction(action: MenuAction): Promise<string | void> {
     case 'dpad':
       dpadMode?.start();
       return;
-    case 'enter':
-      return formatStatus(enterCommand(androidRemote));
     default:
       return;
   }
