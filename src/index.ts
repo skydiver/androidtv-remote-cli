@@ -1,18 +1,13 @@
-import readline from 'readline';
 import AppStorage from 'appstoragejs';
 import { AndroidRemote } from './lib/androidtv-remote';
 import MenuUI, { type MenuAction, type MenuItem } from './ui/menu';
 import {
-  dpadDownCommand,
-  dpadLeftCommand,
-  dpadRightCommand,
-  dpadUpCommand,
   enterCommand,
   exitCommand,
   muteCommand,
   powerCommand,
-  selectCommand,
 } from './ui/menu-commands';
+import DpadModeController from './ui/dpad-mode';
 
 /*****************************************************************************
  * Initialize Settings Storage
@@ -43,12 +38,12 @@ const menuItems: MenuItem[] = [
 ];
 
 let shuttingDown = false;
-let dpadModeActive = false;
-let dpadKeypressHandler: ((chunk: string, key: readline.Key) => void) | undefined;
 const menu = new MenuUI({
   items: menuItems,
   onAction: handleMenuAction,
 });
+
+let dpadMode: DpadModeController | null = null;
 
 function exitApp() {
   if (shuttingDown) {
@@ -56,118 +51,17 @@ function exitApp() {
   }
 
   shuttingDown = true;
-  exitDpadMode(false);
+  dpadMode?.exit(false);
   menu.stop();
   androidRemote.stop();
   process.exit(0);
 }
 
-function startDpadMode(): void {
-  if (dpadModeActive) {
-    return;
-  }
-
-  if (!process.stdin.isTTY || !process.stdout.isTTY) {
-    menu.setStatus('D-pad mode requires a TTY environment.');
-    if (!menu.isRunning()) {
-      menu.start();
-    }
-    return;
-  }
-
-  dpadModeActive = true;
-  menu.stop();
-
-  readline.emitKeypressEvents(process.stdin);
-  process.stdin.resume();
-  process.stdin.setRawMode?.(true);
-
-  console.clear();
-  console.log('──────────────────────────────────────────────');
-  console.log(' D-pad Mode');
-  console.log('──────────────────────────────────────────────');
-  console.log('Use the arrow keys to control the TV.');
-  console.log('Space → Enter');
-  console.log('Enter/Return → Select');
-  console.log('Esc → Back to menu');
-  console.log('Ctrl+C → Exit app');
-  console.log('──────────────────────────────────────────────');
-
-  dpadKeypressHandler = (_chunk, key) => {
-    if (!key) {
-      return;
-    }
-
-    if (key.ctrl && key.name === 'c') {
-      exitApp();
-      return;
-    }
-
-    if (key.name === 'escape') {
-      exitDpadMode();
-      return;
-    }
-
-    switch (key.name) {
-      case 'up':
-        console.log('↑ D-pad Up');
-        dpadUpCommand(androidRemote);
-        break;
-      case 'down':
-        console.log('↓ D-pad Down');
-        dpadDownCommand(androidRemote);
-        break;
-      case 'left':
-        console.log('← D-pad Left');
-        dpadLeftCommand(androidRemote);
-        break;
-      case 'right':
-        console.log('→ D-pad Right');
-        dpadRightCommand(androidRemote);
-        break;
-      case 'space':
-        console.log('␠ Enter command');
-        enterCommand(androidRemote);
-        break;
-      case 'return':
-      case 'enter':
-        console.log('⏎ Select command');
-        selectCommand(androidRemote);
-        break;
-      default:
-        if (key.sequence === ' ') {
-          console.log('␠ Enter command');
-          enterCommand(androidRemote);
-        }
-        break;
-    }
-  };
-
-  process.stdin.on('keypress', dpadKeypressHandler);
-}
-
-function exitDpadMode(shouldRestartMenu = true): void {
-  if (!dpadModeActive) {
-    return;
-  }
-
-  if (dpadKeypressHandler) {
-    process.stdin.off('keypress', dpadKeypressHandler);
-    dpadKeypressHandler = undefined;
-  }
-
-  process.stdin.setRawMode?.(false);
-  process.stdin.pause();
-
-  dpadModeActive = false;
-
-  if (shouldRestartMenu && !shuttingDown) {
-    console.clear();
-    console.log('Returning to menu...');
-    menu.setStatus('Exited D-pad mode.');
-    menu.start();
-  }
-}
+dpadMode = new DpadModeController({
+  remote: androidRemote,
+  menu,
+  exitApp,
+});
 
 async function handleMenuAction(action: MenuAction): Promise<string | void> {
   switch (action) {
@@ -179,7 +73,7 @@ async function handleMenuAction(action: MenuAction): Promise<string | void> {
     case 'power':
       return powerCommand(androidRemote);
     case 'dpad':
-      startDpadMode();
+      dpadMode?.start();
       return;
     case 'enter':
       return enterCommand(androidRemote);
@@ -197,7 +91,7 @@ androidRemote.on('ready', async () => {
 
   if (!shuttingDown) {
     menu.setStatus('Connected to device.');
-    if (!dpadModeActive) {
+    if (!dpadMode?.isActive()) {
       menu.start();
     }
   }
@@ -213,11 +107,11 @@ androidRemote.on('secret', () => {
     }
 
     const wasRunning = menu.isRunning();
-    const wasInDpadMode = dpadModeActive;
+    const wasInDpadMode = dpadMode?.isActive() ?? false;
 
     menu.setStatus('Pairing required. Enter the code to continue.');
-    if (dpadModeActive) {
-      exitDpadMode(false);
+    if (dpadMode?.isActive()) {
+      dpadMode.exit(false);
     }
     menu.stop();
 
@@ -248,7 +142,7 @@ androidRemote.on('error', (error: string) => {
 process.on('SIGINT', exitApp);
 process.on('SIGTERM', exitApp);
 process.on('exit', () => {
-  exitDpadMode(false);
+  dpadMode?.exit(false);
   menu.stop();
 
   if (!shuttingDown) {
