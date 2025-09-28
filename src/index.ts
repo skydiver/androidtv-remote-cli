@@ -1,5 +1,5 @@
-import Readline from 'readline';
 import AppStorage from 'appstoragejs';
+import enquirer from 'enquirer';
 import { AndroidRemote, RemoteDirection, RemoteKeyCode } from './lib/androidtv-remote';
 
 /*****************************************************************************
@@ -22,10 +22,65 @@ const options = {
  ****************************************************************************/
 const androidRemote = new AndroidRemote(settings.host, options);
 
-const line = Readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
+type MenuAction = 'mute' | 'power' | 'exit';
+
+let menuActive = false;
+let shuttingDown = false;
+
+const exitApp = () => {
+  if (shuttingDown) {
+    return;
+  }
+
+  shuttingDown = true;
+  androidRemote.stop();
+  process.exit(0);
+};
+
+const runMenu = async () => {
+  const promptAction = async (): Promise<MenuAction> => {
+    const { action } = await enquirer.prompt<{ action: MenuAction }>({
+      type: 'select',
+      name: 'action',
+      message: 'Android TV Remote',
+      choices: [
+        { name: 'mute', message: 'Mute', value: 'mute' satisfies MenuAction },
+        { name: 'power', message: 'Power', value: 'power' satisfies MenuAction },
+        { name: 'exit', message: 'Exit', value: 'exit' satisfies MenuAction },
+      ],
+    });
+
+    return action;
+  };
+
+  while (!shuttingDown) {
+    try {
+      const choice = await promptAction();
+
+      if (choice === 'mute') {
+        androidRemote.sendKey(RemoteKeyCode.KEYCODE_VOLUME_MUTE, RemoteDirection.SHORT);
+        console.log('Mute command sent.');
+        continue;
+      }
+
+      if (choice === 'power') {
+        androidRemote.sendPower();
+        console.log('Power toggle sent.');
+        continue;
+      }
+
+      if (choice === 'exit') {
+        exitApp();
+        break;
+      }
+    } catch (_error) {
+      if (!shuttingDown) {
+        console.error('Menu cancelled.');
+        exitApp();
+      }
+    }
+  }
+};
 
 /*****************************************************************************
  * Device connection is ready
@@ -33,15 +88,33 @@ const line = Readline.createInterface({
 androidRemote.on('ready', async () => {
   const cert = androidRemote.getCertificate();
   settings.cert = cert;
+
+  if (!menuActive) {
+    menuActive = true;
+    void runMenu();
+  }
 });
 
 /*****************************************************************************
  * Handle Pairing
  ****************************************************************************/
 androidRemote.on('secret', () => {
-  line.question('Code : ', async (code) => {
-    androidRemote.sendCode(code);
-  });
+  void (async () => {
+    try {
+      const { code } = await enquirer.prompt<{ code: string }>({
+        type: 'input',
+        name: 'code',
+        message: 'Code:',
+      });
+
+      androidRemote.sendCode(code.trim());
+    } catch (_error) {
+      if (!shuttingDown) {
+        console.error('Pairing cancelled.');
+        exitApp();
+      }
+    }
+  })();
 });
 
 /*****************************************************************************
@@ -49,6 +122,14 @@ androidRemote.on('secret', () => {
  ****************************************************************************/
 androidRemote.on('error', (error: string) => {
   console.error('Error : ' + error);
+});
+
+process.on('SIGINT', exitApp);
+process.on('SIGTERM', exitApp);
+process.on('exit', () => {
+  if (!shuttingDown) {
+    androidRemote.stop();
+  }
 });
 
 /*****************************************************************************
