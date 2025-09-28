@@ -25,6 +25,18 @@ export function powerCommand(remote: AndroidRemote): string {
   return 'Power toggle sent.';
 }
 
+export function backCommand(remote: AndroidRemote): string {
+  return sendKeyCommand(remote, RemoteKeyCode.KEYCODE_BACK, 'Back');
+}
+
+export function volumeUpCommand(remote: AndroidRemote): string {
+  return sendKeyCommand(remote, RemoteKeyCode.KEYCODE_VOLUME_UP, 'Volume up');
+}
+
+export function volumeDownCommand(remote: AndroidRemote): string {
+  return sendKeyCommand(remote, RemoteKeyCode.KEYCODE_VOLUME_DOWN, 'Volume down');
+}
+
 export function exitCommand(menu: MenuUI, exitExecutor: ExitExecutor): void {
   menu.setStatus('Closing remote...');
   exitExecutor();

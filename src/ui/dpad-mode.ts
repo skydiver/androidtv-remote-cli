@@ -8,7 +8,12 @@ import {
   dpadUpCommand,
   enterCommand,
   selectCommand,
+  muteCommand,
+  volumeDownCommand,
+  volumeUpCommand,
+  backCommand,
 } from './menu-commands';
+import { isDebugMode } from '../debug';
 
 export interface DpadModeOptions {
   remote: AndroidRemote;
@@ -45,19 +50,23 @@ class DpadModeController {
 
     console.clear();
     const remoteArt = [
-      '        ┌────────┐',
-      '        │ POWER  │',
-      '┌───────┴────────┴───────┐',
-      '│           ^            │',
-      '│       <   ○   >        │',
-      '│           v            │',
-      '├──────────┬─────────────┤',
-      '│ SPACE -> │ ENTER key   │',
-      '│ ENTER    │ -> SELECT   │',
-      '├──────────┴─────────────┤',
-      '│ ESC returns to menu    │',
-      '│ Ctrl+C exits app       │',
-      '└────────────────────────┘',
+      '        ┌──────────┐',
+      '        │  POWER   │',
+      '┌───────┴──────────┴───────┐',
+      '│           ^              │',
+      '│       <   ○   >          │',
+      '│           v              │',
+      '├──────────┬───────────────┤',
+      '│ SPACE -> │ Enter key     │',
+      '│ BACK    │ Backspace key  │',
+      '├──────────┼───────────────┤',
+      '│ VOLUME ↑ │ + key         │',
+      '│ VOLUME ↓ │ - key         │',
+      '│ MUTE     │ m key         │',
+      '├──────────┴───────────────┤',
+      '│ ESC returns to menu      │',
+      '│ Ctrl+C exits app         │',
+      '└──────────────────────────┘',
     ];
     remoteArt.forEach((line) => console.log(line));
 
@@ -76,35 +85,81 @@ class DpadModeController {
         return;
       }
 
+      if (key.name === 'backspace') {
+        if (isDebugMode()) {
+          console.log('↩ Back');
+        }
+        backCommand(this.options.remote);
+        return;
+      }
+
+      if (key.name === 'm') {
+        if (isDebugMode()) {
+          console.log('🔇 Mute');
+        }
+        muteCommand(this.options.remote);
+        return;
+      }
+
+      if (key.sequence === '+') {
+        if (isDebugMode()) {
+          console.log('🔊 Volume Up');
+        }
+        volumeUpCommand(this.options.remote);
+        return;
+      }
+
+      if (key.sequence === '-') {
+        if (isDebugMode()) {
+          console.log('🔉 Volume Down');
+        }
+        volumeDownCommand(this.options.remote);
+        return;
+      }
+
       switch (key.name) {
         case 'up':
-          console.log('↑ D-pad Up');
+          if (isDebugMode()) {
+            console.log('↑ D-pad Up');
+          }
           dpadUpCommand(this.options.remote);
           break;
         case 'down':
-          console.log('↓ D-pad Down');
+          if (isDebugMode()) {
+            console.log('↓ D-pad Down');
+          }
           dpadDownCommand(this.options.remote);
           break;
         case 'left':
-          console.log('← D-pad Left');
+          if (isDebugMode()) {
+            console.log('← D-pad Left');
+          }
           dpadLeftCommand(this.options.remote);
           break;
         case 'right':
-          console.log('→ D-pad Right');
+          if (isDebugMode()) {
+            console.log('→ D-pad Right');
+          }
           dpadRightCommand(this.options.remote);
           break;
         case 'space':
-          console.log('␠ Enter command');
+          if (isDebugMode()) {
+            console.log('␠ Enter command');
+          }
           enterCommand(this.options.remote);
           break;
         case 'return':
         case 'enter':
-          console.log('⏎ Select command');
+          if (isDebugMode()) {
+            console.log('⏎ Select command');
+          }
           selectCommand(this.options.remote);
           break;
         default:
           if (key.sequence === ' ') {
-            console.log('␠ Enter command');
+            if (isDebugMode()) {
+              console.log('␠ Enter command');
+            }
             enterCommand(this.options.remote);
           }
           break;
