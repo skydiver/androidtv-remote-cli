@@ -1,7 +1,17 @@
 import AppStorage from 'appstoragejs';
 import { AndroidRemote } from './lib/androidtv-remote';
 import MenuUI, { type MenuAction, type MenuItem } from './ui/menu';
-import { exitCommand, muteCommand, powerCommand } from './ui/menu-commands';
+import {
+  dpadDownCommand,
+  dpadLeftCommand,
+  dpadRightCommand,
+  dpadUpCommand,
+  enterCommand,
+  exitCommand,
+  muteCommand,
+  powerCommand,
+  selectCommand,
+} from './ui/menu-commands';
 
 /*****************************************************************************
  * Initialize Settings Storage
@@ -26,6 +36,12 @@ const androidRemote = new AndroidRemote(settings.host, options);
 const menuItems: MenuItem[] = [
   { label: 'Mute', action: 'mute' },
   { label: 'Power', action: 'power' },
+  { label: 'D-pad Up', action: 'dpad-up' },
+  { label: 'D-pad Down', action: 'dpad-down' },
+  { label: 'D-pad Left', action: 'dpad-left' },
+  { label: 'D-pad Right', action: 'dpad-right' },
+  { label: 'Enter', action: 'enter' },
+  { label: 'Select', action: 'select' },
   { label: 'Exit', action: 'exit' },
 ];
 
@@ -47,17 +63,28 @@ function exitApp() {
 }
 
 async function handleMenuAction(action: MenuAction): Promise<string | void> {
-  if (action === 'exit') {
-    exitCommand(menu, exitApp);
-    return;
-  }
-
-  if (action === 'mute') {
-    return muteCommand(androidRemote);
-  }
-
-  if (action === 'power') {
-    return powerCommand(androidRemote);
+  switch (action) {
+    case 'exit':
+      exitCommand(menu, exitApp);
+      return;
+    case 'mute':
+      return muteCommand(androidRemote);
+    case 'power':
+      return powerCommand(androidRemote);
+    case 'dpad-up':
+      return dpadUpCommand(androidRemote);
+    case 'dpad-down':
+      return dpadDownCommand(androidRemote);
+    case 'dpad-left':
+      return dpadLeftCommand(androidRemote);
+    case 'dpad-right':
+      return dpadRightCommand(androidRemote);
+    case 'enter':
+      return enterCommand(androidRemote);
+    case 'select':
+      return selectCommand(androidRemote);
+    default:
+      return;
   }
 }
 
