@@ -38,7 +38,6 @@ const menuItems: MenuItem[] = [
   { label: 'Mute', action: 'mute' },
   { label: 'Power', action: 'power' },
   { label: 'Enter', action: 'enter' },
-  { label: 'Select', action: 'select' },
   { label: 'D-pad Controls', action: 'dpad' },
   { label: 'Exit', action: 'exit' },
 ];
@@ -184,8 +183,6 @@ async function handleMenuAction(action: MenuAction): Promise<string | void> {
       return;
     case 'enter':
       return enterCommand(androidRemote);
-    case 'select':
-      return selectCommand(androidRemote);
     default:
       return;
   }
