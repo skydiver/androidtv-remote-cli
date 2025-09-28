@@ -32,13 +32,13 @@ const options = {
 const androidRemote = new AndroidRemote(settings.host, options);
 
 const menuItems: MenuItem[] = [
-  { label: 'Mute', action: 'mute' },
-  { label: 'Power', action: 'power' },
-  { label: 'Home', action: 'home' },
-  { label: 'Debug', action: 'debug' },
-  { label: 'Enter', action: 'enter' },
-  { label: 'D-pad Controls', action: 'dpad' },
-  { label: 'Exit', action: 'exit' },
+  { label: '🔇  Mute', action: 'mute' },
+  { label: '🔌  Power', action: 'power' },
+  { label: '🏠  Home', action: 'home' },
+  { label: '🐞  Debug', action: 'debug' },
+  { label: '⏎  Enter', action: 'enter' },
+  { label: '🎮  D-pad Controls', action: 'dpad' },
+  { label: '🚪  Exit', action: 'exit' },
 ];
 
 let shuttingDown = false;
