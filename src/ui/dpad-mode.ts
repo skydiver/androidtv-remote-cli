@@ -43,15 +43,22 @@ class DpadModeController {
     process.stdin.setRawMode?.(true);
 
     console.clear();
-    console.log('──────────────────────────────────────────────');
-    console.log(' D-pad Mode');
-    console.log('──────────────────────────────────────────────');
-    console.log('Use the arrow keys to control the TV.');
-    console.log('Space → Enter');
-    console.log('Enter/Return → Select');
-    console.log('Esc → Back to menu');
-    console.log('Ctrl+C → Exit app');
-    console.log('──────────────────────────────────────────────');
+    const remoteArt = [
+      '        ┌────────┐',
+      '        │ POWER  │',
+      '┌───────┴────────┴───────┐',
+      '│           ^            │',
+      '│       <   ○   >        │',
+      '│           v            │',
+      '├──────────┬─────────────┤',
+      '│ SPACE -> │ ENTER key   │',
+      '│ ENTER    │ -> SELECT   │',
+      '├──────────┴─────────────┤',
+      '│ ESC returns to menu    │',
+      '│ Ctrl+C exits app       │',
+      '└────────────────────────┘',
+    ];
+    remoteArt.forEach((line) => console.log(line));
 
     this.keypressHandler = (_chunk, key) => {
       if (!key) {
