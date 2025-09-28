@@ -12,6 +12,7 @@ import {
   volumeDownCommand,
   volumeUpCommand,
   backCommand,
+  homeCommand,
 } from './menu-commands';
 import { isDebugMode } from '../debug';
 
@@ -63,6 +64,7 @@ class DpadModeController {
       '│ VOLUME ↑ │ + key         │',
       '│ VOLUME ↓ │ - key         │',
       '│ MUTE     │ m key         │',
+      '│ HOME     │ h key         │',
       '├──────────┴───────────────┤',
       '│ ESC returns to menu      │',
       '│ Ctrl+C exits app         │',
@@ -98,6 +100,14 @@ class DpadModeController {
           console.log('🔇 Mute');
         }
         muteCommand(this.options.remote);
+        return;
+      }
+
+      if (key.name === 'h') {
+        if (isDebugMode()) {
+          console.log('🏠 Home');
+        }
+        homeCommand(this.options.remote);
         return;
       }
 
