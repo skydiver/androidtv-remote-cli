@@ -14,6 +14,7 @@ export interface DpadModeOptions {
   remote: AndroidRemote;
   menu: MenuUI;
   exitApp: () => void;
+  formatStatus: (message: string) => string;
 }
 
 class DpadModeController {
@@ -28,7 +29,7 @@ class DpadModeController {
     }
 
     if (!process.stdin.isTTY || !process.stdout.isTTY) {
-      this.options.menu.setStatus('D-pad mode requires a TTY environment.');
+      this.options.menu.setStatus(this.options.formatStatus('D-pad mode requires a TTY environment.'));
       if (!this.options.menu.isRunning()) {
         this.options.menu.start();
       }
@@ -131,7 +132,7 @@ class DpadModeController {
     if (shouldRestartMenu) {
       console.clear();
       console.log('Returning to menu...');
-      this.options.menu.setStatus('Exited D-pad mode.');
+      this.options.menu.setStatus(this.options.formatStatus('Exited D-pad mode.'));
       this.options.menu.start();
     }
   }

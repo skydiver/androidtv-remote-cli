@@ -9,6 +9,7 @@ import {
   powerCommand,
 } from './ui/menu-commands';
 import DpadModeController from './ui/dpad-mode';
+import { isDebugMode, setDebugMode } from './debug';
 
 /*****************************************************************************
  * Initialize Settings Storage
@@ -34,6 +35,7 @@ const menuItems: MenuItem[] = [
   { label: 'Mute', action: 'mute' },
   { label: 'Power', action: 'power' },
   { label: 'Home', action: 'home' },
+  { label: 'Debug', action: 'debug' },
   { label: 'Enter', action: 'enter' },
   { label: 'D-pad Controls', action: 'dpad' },
   { label: 'Exit', action: 'exit' },
@@ -46,6 +48,20 @@ const menu = new MenuUI({
 });
 
 let dpadMode: DpadModeController | null = null;
+let lastStatusBase = 'Select an option';
+
+function formatStatus(message?: string): string {
+  if (message !== undefined) {
+    lastStatusBase = message;
+  }
+  return `${lastStatusBase} (Debug: ${isDebugMode() ? 'On' : 'Off'})`;
+}
+
+function toggleDebugMode(): string {
+  const next = !isDebugMode();
+  setDebugMode(next);
+  return formatStatus(`Debug ${next ? 'enabled' : 'disabled'}.`);
+}
 
 function exitApp() {
   if (shuttingDown) {
@@ -63,7 +79,10 @@ dpadMode = new DpadModeController({
   remote: androidRemote,
   menu,
   exitApp,
+  formatStatus,
 });
+
+setDebugMode(false);
 
 async function handleMenuAction(action: MenuAction): Promise<string | void> {
   switch (action) {
@@ -71,16 +90,18 @@ async function handleMenuAction(action: MenuAction): Promise<string | void> {
       exitCommand(menu, exitApp);
       return;
     case 'mute':
-      return muteCommand(androidRemote);
+      return formatStatus(muteCommand(androidRemote));
     case 'power':
-      return powerCommand(androidRemote);
+      return formatStatus(powerCommand(androidRemote));
     case 'home':
-      return homeCommand(androidRemote);
+      return formatStatus(homeCommand(androidRemote));
+    case 'debug':
+      return toggleDebugMode();
     case 'dpad':
       dpadMode?.start();
       return;
     case 'enter':
-      return enterCommand(androidRemote);
+      return formatStatus(enterCommand(androidRemote));
     default:
       return;
   }
@@ -94,7 +115,7 @@ androidRemote.on('ready', async () => {
   settings.cert = cert;
 
   if (!shuttingDown) {
-    menu.setStatus('Connected to device.');
+    menu.setStatus(formatStatus('Connected to device.'));
     if (!dpadMode?.isActive()) {
       menu.start();
     }
@@ -113,7 +134,7 @@ androidRemote.on('secret', () => {
     const wasRunning = menu.isRunning();
     const wasInDpadMode = dpadMode?.isActive() ?? false;
 
-    menu.setStatus('Pairing required. Enter the code to continue.');
+    menu.setStatus(formatStatus('Pairing required. Enter the code to continue.'));
     if (dpadMode?.isActive()) {
       dpadMode.exit(false);
     }
@@ -124,12 +145,12 @@ androidRemote.on('secret', () => {
       androidRemote.sendCode(code.trim());
 
       if ((wasRunning || wasInDpadMode) && !shuttingDown) {
-        menu.setStatus('Pairing code sent. Waiting for device...');
+        menu.setStatus(formatStatus('Pairing code sent. Waiting for device...'));
         menu.start();
       }
     } catch (_error) {
       if (!shuttingDown) {
-        menu.setStatus('Pairing cancelled.');
+        menu.setStatus(formatStatus('Pairing cancelled.'));
         exitApp();
       }
     }
@@ -140,7 +161,7 @@ androidRemote.on('secret', () => {
  * Listen for errors
  ****************************************************************************/
 androidRemote.on('error', (error: string) => {
-  menu.setStatus(`Error: ${error}`);
+  menu.setStatus(formatStatus(`Error: ${error}`));
 });
 
 process.on('SIGINT', exitApp);
