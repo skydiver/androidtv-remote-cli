@@ -1,6 +1,6 @@
 import Readline from 'readline';
-import { AndroidRemote, RemoteDirection, RemoteKeyCode } from 'androidtv-remote';
 import AppStorage from 'appstoragejs';
+import { AndroidRemote, RemoteDirection, RemoteKeyCode } from './lib/androidtv-remote';
 
 /*****************************************************************************
  * Initialize Settings Storage
