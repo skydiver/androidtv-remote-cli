@@ -1,4 +1,3 @@
-import AppStorage from 'appstoragejs';
 import { AndroidRemote } from './lib/androidtv-remote';
 import MenuUI, { type MenuAction, type MenuItem } from './ui/menu';
 import {
@@ -11,11 +10,23 @@ import DpadModeController from './ui/dpad-mode';
 import { isDebugMode, setDebugMode } from './debug';
 import HelpScreenController from './ui/help';
 import packageInfo from '../package.json' assert { type: 'json' };
+import { getSetting, setSetting } from './settings';
 
 /*****************************************************************************
  * Initialize Settings Storage
  ****************************************************************************/
-const settings = new AppStorage('settings.json');
+type StoredCertificate = {
+  key?: string;
+  cert?: string;
+} | undefined;
+
+const host = getSetting<string>('host');
+
+if (!host) {
+  throw new Error('No host configured. Please set the host in the settings.');
+}
+
+const storedCert = getSetting<StoredCertificate>('cert');
 
 /*****************************************************************************
  * Options for the connection
@@ -24,13 +35,13 @@ const options = {
   pairing_port: 6467,
   remote_port: 6466,
   name: 'androidtv-remote',
-  cert: settings.cert,
+  cert: storedCert,
 };
 
 /*****************************************************************************
  * Create the AndroidRemote instance
  ****************************************************************************/
-const androidRemote = new AndroidRemote(settings.host, options);
+const androidRemote = new AndroidRemote(host, options);
 
 type PendingMode = 'dpad' | 'help' | null;
 
@@ -137,7 +148,7 @@ async function handleMenuAction(action: MenuAction): Promise<string | void> {
  ****************************************************************************/
 androidRemote.on('ready', async () => {
   const cert = androidRemote.getCertificate();
-  settings.cert = cert;
+  setSetting('cert', cert);
 
   if (!shuttingDown) {
     menu.setStatus(formatStatus('Connected to device.'));
