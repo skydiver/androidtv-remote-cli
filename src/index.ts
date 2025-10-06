@@ -9,6 +9,7 @@ import {
 } from './ui/menu-commands';
 import DpadModeController from './ui/dpad-mode';
 import { isDebugMode, setDebugMode } from './debug';
+import HelpScreenController from './ui/help';
 
 /*****************************************************************************
  * Initialize Settings Storage
@@ -30,16 +31,18 @@ const options = {
  ****************************************************************************/
 const androidRemote = new AndroidRemote(settings.host, options);
 
+type PendingMode = 'dpad' | 'help' | null;
+
 const cliArgs = process.argv.slice(2);
 const primaryCommand = cliArgs[0];
-const shouldAutoStartDpad = primaryCommand === 'dpad';
-let pendingDpadStart = shouldAutoStartDpad;
+let pendingMode: PendingMode = primaryCommand === 'dpad' ? 'dpad' : primaryCommand === 'help' ? 'help' : null;
 
 const menuItems: MenuItem[] = [
   { label: '🎮  D-pad Controls', action: 'dpad' },
   { label: '🏠  Home', action: 'home' },
   { label: '🔇  Mute', action: 'mute' },
   { label: '🔌  Power', action: 'power' },
+  { label: 'ℹ️  Help', action: 'help' },
   { label: '🐞  Debug', action: 'debug' },
   { label: '🚪  Exit', action: 'exit' },
 ];
@@ -51,6 +54,7 @@ const menu = new MenuUI({
 });
 
 let dpadMode: DpadModeController | null = null;
+let helpScreen: HelpScreenController | null = null;
 let lastStatusBase = 'Select an option';
 
 function formatStatus(message?: string): string {
@@ -73,6 +77,7 @@ function exitApp() {
 
   shuttingDown = true;
   dpadMode?.exit(false);
+  helpScreen?.exit(false);
   menu.stop();
   androidRemote.stop();
   process.exit(0);
@@ -85,7 +90,18 @@ dpadMode = new DpadModeController({
   formatStatus,
 });
 
+helpScreen = new HelpScreenController({
+  menu,
+  exitApp,
+  formatStatus,
+});
+
 setDebugMode(false);
+
+if (pendingMode === 'help') {
+  pendingMode = null;
+  helpScreen.start();
+}
 
 async function handleMenuAction(action: MenuAction): Promise<string | void> {
   switch (action) {
@@ -103,6 +119,9 @@ async function handleMenuAction(action: MenuAction): Promise<string | void> {
     case 'dpad':
       dpadMode?.start();
       return;
+    case 'help':
+      helpScreen?.start();
+      return;
     default:
       return;
   }
@@ -117,10 +136,13 @@ androidRemote.on('ready', async () => {
 
   if (!shuttingDown) {
     menu.setStatus(formatStatus('Connected to device.'));
-    if (pendingDpadStart) {
-      pendingDpadStart = false;
+    if (pendingMode === 'dpad') {
+      pendingMode = null;
       dpadMode?.start();
-    } else if (!dpadMode?.isActive()) {
+    } else if (pendingMode === 'help') {
+      pendingMode = null;
+      helpScreen?.start();
+    } else if (!dpadMode?.isActive() && !helpScreen?.isActive()) {
       menu.start();
     }
   }
@@ -145,13 +167,23 @@ androidRemote.on('secret', () => {
 
     const wasRunning = menu.isRunning();
     const wasInDpadMode = dpadMode?.isActive() ?? false;
+    const wasInHelpMode = helpScreen?.isActive() ?? false;
 
     menu.setStatus(formatStatus('Pairing required. Enter the code to continue.'));
     if (dpadMode?.isActive()) {
       dpadMode.exit(false);
     }
+    if (helpScreen?.isActive()) {
+      helpScreen.exit(false);
+    }
     menu.stop();
-    pendingDpadStart = pendingDpadStart || wasInDpadMode;
+    if (pendingMode === null) {
+      if (wasInDpadMode) {
+        pendingMode = 'dpad';
+      } else if (wasInHelpMode) {
+        pendingMode = 'help';
+      }
+    }
 
     try {
       const code = await menu.promptPairingCode();
@@ -159,7 +191,7 @@ androidRemote.on('secret', () => {
 
       if (!shuttingDown) {
         menu.setStatus(formatStatus('Pairing code sent. Waiting for device...'));
-        if (!pendingDpadStart && (wasRunning || wasInDpadMode)) {
+        if (pendingMode === null && (wasRunning || wasInDpadMode || wasInHelpMode)) {
           menu.start();
         }
       }
@@ -183,6 +215,7 @@ process.on('SIGINT', exitApp);
 process.on('SIGTERM', exitApp);
 process.on('exit', () => {
   dpadMode?.exit(false);
+  helpScreen?.exit(false);
   menu.stop();
 
   if (!shuttingDown) {

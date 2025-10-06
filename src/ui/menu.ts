@@ -1,7 +1,7 @@
 import readline from 'readline';
 import enquirer from 'enquirer';
 
-export type MenuAction = 'mute' | 'power' | 'home' | 'debug' | 'dpad' | 'exit';
+export type MenuAction = 'mute' | 'power' | 'home' | 'debug' | 'dpad' | 'help' | 'exit';
 
 export type MenuItem = {
   label: string;
