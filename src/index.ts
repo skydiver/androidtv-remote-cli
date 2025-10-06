@@ -42,8 +42,8 @@ const menuItems: MenuItem[] = [
   { label: '🏠  Home', action: 'home' },
   { label: '🔇  Mute', action: 'mute' },
   { label: '🔌  Power', action: 'power' },
-  { label: 'ℹ️  Help', action: 'help' },
   { label: '🐞  Debug', action: 'debug' },
+  { label: 'ℹ️  Help', action: 'help' },
   { label: '🚪  Exit', action: 'exit' },
 ];
 
