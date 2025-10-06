@@ -1,7 +1,23 @@
 import protobufjs from 'protobufjs';
 import { system } from 'systeminformation';
 
-import pairingMessageDefinition from './pairingmessage.proto';
+let pairingMessageDefinition: string;
+
+try {
+  pairingMessageDefinition = (await import('./pairingmessage.proto')).default;
+} catch (error) {
+  if (error instanceof TypeError && String(error).includes('Unknown file extension')) {
+    const [{ readFileSync }, { dirname, join }, { fileURLToPath }] = await Promise.all([
+      import('node:fs'),
+      import('node:path'),
+      import('node:url'),
+    ]);
+    const directory = dirname(fileURLToPath(import.meta.url));
+    pairingMessageDefinition = readFileSync(join(directory, 'pairingmessage.proto'), 'utf8');
+  } else {
+    throw error;
+  }
+}
 
 class PairingMessageManager {
   constructor() {
