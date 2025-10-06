@@ -65,3 +65,22 @@ export function enterCommand(remote: AndroidRemote): string {
 export function selectCommand(remote: AndroidRemote): string {
   return sendKeyCommand(remote, RemoteKeyCode.KEYCODE_DPAD_CENTER, 'Select');
 }
+
+const digitToKeyCode: Record<string, RemoteKeyCode> = {
+  '0': RemoteKeyCode.KEYCODE_0,
+  '1': RemoteKeyCode.KEYCODE_1,
+  '2': RemoteKeyCode.KEYCODE_2,
+  '3': RemoteKeyCode.KEYCODE_3,
+  '4': RemoteKeyCode.KEYCODE_4,
+  '5': RemoteKeyCode.KEYCODE_5,
+  '6': RemoteKeyCode.KEYCODE_6,
+  '7': RemoteKeyCode.KEYCODE_7,
+  '8': RemoteKeyCode.KEYCODE_8,
+  '9': RemoteKeyCode.KEYCODE_9,
+};
+
+export type DigitKey = keyof typeof digitToKeyCode;
+
+export function numberCommand(remote: AndroidRemote, digit: DigitKey): string {
+  return sendKeyCommand(remote, digitToKeyCode[digit], `Number ${digit}`);
+}

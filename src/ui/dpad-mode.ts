@@ -12,6 +12,8 @@ import {
   volumeUpCommand,
   backCommand,
   homeCommand,
+  numberCommand,
+  type DigitKey,
 } from './menu-commands';
 import { isDebugMode } from '../debug';
 
@@ -64,6 +66,7 @@ class DpadModeController {
       '│ 🔉 Vol ↓ │ - key         │',
       '│ 🔇 Mute  │ m key         │',
       '│ 🏠 Home  │ h key         │',
+      '│ 🔢 0-9   │ number keys   │',
       '├──────────┴───────────────┤',
       '│ ESC returns to menu      │',
       '│ Ctrl+C exits app         │',
@@ -126,6 +129,15 @@ class DpadModeController {
         return;
       }
 
+      const digit = this.extractDigitKey(key);
+      if (digit) {
+        if (isDebugMode()) {
+          console.log(`🔢 Number ${digit}`);
+        }
+        numberCommand(this.options.remote, digit);
+        return;
+      }
+
       switch (key.name) {
         case 'up':
           if (isDebugMode()) {
@@ -171,6 +183,19 @@ class DpadModeController {
     };
 
     process.stdin.on('keypress', this.keypressHandler);
+  }
+
+  private extractDigitKey(key: readline.Key): DigitKey | undefined {
+    const candidate = key.name ?? key.sequence;
+    if (!candidate) {
+      return undefined;
+    }
+
+    if (candidate.length === 1 && candidate >= '0' && candidate <= '9') {
+      return candidate as DigitKey;
+    }
+
+    return undefined;
   }
 
   exit(shouldRestartMenu = true): void {
