@@ -1,14 +1,11 @@
-import * as path from 'path';
 import protobufjs from 'protobufjs';
 import { system } from 'systeminformation';
 
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
-const directory = dirname(fileURLToPath(import.meta.url));
+import remoteMessageDefinition from './remotemessage.proto';
 
 class RemoteMessageManager {
   constructor() {
-    this.root = protobufjs.loadSync(path.join(directory, 'remotemessage.proto'));
+    this.root = protobufjs.parse(remoteMessageDefinition).root;
     this.RemoteMessage = this.root.lookupType('remote.RemoteMessage');
     this.RemoteKeyCode = this.root.lookupEnum('remote.RemoteKeyCode').values;
     this.RemoteDirection = this.root.lookupEnum('remote.RemoteDirection').values;

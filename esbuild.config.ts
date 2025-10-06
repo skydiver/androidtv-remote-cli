@@ -1,4 +1,9 @@
+import { execSync } from 'child_process';
 import esbuild from 'esbuild';
+import { build } from 'esbuild';
+
+// run `which node` at build time
+const nodePath = execSync('which node').toString().trim();
 
 try {
   await esbuild.build({
@@ -7,8 +12,13 @@ try {
     outfile: 'build/bundle.js',
     platform: 'node',
     format: 'esm',
+    loader: {
+      '.proto': 'text',
+    },
     banner: {
-      js: '#!/usr/bin/env node',
+      js: `#!${nodePath}
+import { createRequire as __createRequire } from 'module';
+const require = __createRequire(import.meta.url);`, // ensure CommonJS shims work under ESM
     },
   });
   console.log('⚡ Build finished successfully!');
