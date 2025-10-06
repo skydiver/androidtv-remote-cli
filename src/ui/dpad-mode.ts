@@ -51,13 +51,13 @@ class DpadModeController {
     console.clear();
     const remoteArt = [
       '        ┌──────────┐',
-      '        │  POWER   │',
+      '        │          │',
       '┌───────┴──────────┴───────┐',
       '│           ^              │',
       '│       <   ○   >          │',
       '│           v              │',
       '├──────────┬───────────────┤',
-      '│ 🎯 Select│ Space key     │',
+      '│ ⌨ Select │ Enter key     │',
       '│ 🔙 Back  │ Backspace key │',
       '├──────────┼───────────────┤',
       '│ 🔊 Vol ↑ │ + key         │',
@@ -152,15 +152,17 @@ class DpadModeController {
           dpadRightCommand(this.options.remote);
           break;
         case 'space':
+        case 'enter':
+        case 'return':
           if (isDebugMode()) {
-            console.log('🎯 Select command');
+            console.log('⌨ Select command');
           }
           selectCommand(this.options.remote);
           break;
         default:
           if (key.sequence === ' ') {
             if (isDebugMode()) {
-              console.log('🎯 Select command');
+              console.log('⌨ Select command');
             }
             selectCommand(this.options.remote);
           }
