@@ -8,9 +8,9 @@
     "url": "https://github.com/skydiver/"
   },
   "type": "module",
-  "main": "build/bundle.js",
+  "main": "build/tvrc",
   "scripts": {
-    "build": "pnpm clean && tsx esbuild.config.ts && chmod +x build/bundle.js",
+    "build": "pnpm clean && tsx esbuild.config.ts && chmod +x build/tvrc",
     "clean": "rimraf build",
     "dev": "tsx watch src/index.ts",
     "lint:check": "biome check .",

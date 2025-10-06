@@ -9,7 +9,7 @@ try {
   await esbuild.build({
     entryPoints: ['src/index.ts'],
     bundle: true,
-    outfile: 'build/bundle.js',
+    outfile: 'build/tvrc',
     platform: 'node',
     format: 'esm',
     loader: {
