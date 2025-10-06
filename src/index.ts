@@ -61,7 +61,8 @@ function formatStatus(message?: string): string {
   if (message !== undefined) {
     lastStatusBase = message;
   }
-  return `${lastStatusBase} (Debug: ${isDebugMode() ? 'On' : 'Off'})`;
+  menu.setDebugStatus(`Debug: ${isDebugMode() ? 'On' : 'Off'}`);
+  return lastStatusBase;
 }
 
 function toggleDebugMode(): string {

@@ -25,6 +25,7 @@ export class MenuUI {
   private processingSelection = false;
   private keypressConfigured = false;
   private headerLabel?: string;
+  private debugStatus = 'Debug: Off';
   private readonly handleKeypressBound: (_: string, key: readline.Key) => void;
 
   constructor(options: MenuOptions) {
@@ -88,6 +89,14 @@ export class MenuUI {
 
   setHeaderLabel(label: string | undefined): void {
     this.headerLabel = label?.trim();
+    if (this.running && !this.processingSelection) {
+      this.render();
+    }
+  }
+
+  setDebugStatus(label: string): void {
+    const trimmed = label.trim();
+    this.debugStatus = trimmed.length > 0 ? trimmed : 'Debug status unavailable';
     if (this.running && !this.processingSelection) {
       this.render();
     }
@@ -183,6 +192,7 @@ export class MenuUI {
     const headerText = this.headerLabel && this.headerLabel.length > 0 ? this.headerLabel : 'Android TV Remote';
     const menuTitle = headerText;
     const instructions = '↑/↓ Move  Enter Select  Ctrl+C Exit';
+    const debugLine = this.debugStatus;
 
     const optionLines = this.items.map((item, idx) => {
       const prefix = idx === this.selectionIndex ? '›' : ' ';
@@ -193,6 +203,7 @@ export class MenuUI {
       menuTitle.length,
       instructions.length,
       this.statusMessage.length,
+      debugLine.length,
       ...optionLines.map((line) => line.length)
     );
 
@@ -213,6 +224,8 @@ export class MenuUI {
       `├${horizontal}┤`,
       buildLine(this.statusMessage || 'Select an option'),
       buildLine(instructions),
+      `├${horizontal}┤`,
+      buildLine(debugLine),
       `└${horizontal}┘`,
     ];
 
