@@ -11,6 +11,7 @@ import { isDebugMode, setDebugMode } from './debug';
 import HelpScreenController from './ui/help';
 import packageInfo from '../package.json' assert { type: 'json' };
 import { getSetting, setSetting } from './settings';
+import { abortSetup, ensureHost } from './setup';
 
 /*****************************************************************************
  * Initialize Settings Storage
@@ -20,11 +21,7 @@ type StoredCertificate = {
   cert?: string;
 } | undefined;
 
-const host = getSetting<string>('host');
-
-if (!host) {
-  throw new Error('No host configured. Please set the host in the settings.');
-}
+const host = await ensureHost().catch(abortSetup);
 
 const storedCert = getSetting<StoredCertificate>('cert');
 
