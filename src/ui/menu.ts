@@ -144,6 +144,11 @@ export class MenuUI {
       return;
     }
 
+    if (key.name === 'escape') {
+      void this.triggerAction('exit');
+      return;
+    }
+
     if (key.name === 'up') {
       this.selectionIndex = (this.selectionIndex + this.items.length - 1) % this.items.length;
       if (this.running) {
