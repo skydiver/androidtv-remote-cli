@@ -118,6 +118,14 @@ androidRemote.on('ready', async () => {
   }
 });
 
+androidRemote.on('volume', (volumeInfo: { playerModel?: string } | undefined) => {
+  if (!volumeInfo?.playerModel) {
+    return;
+  }
+
+  dpadMode?.setHeaderLabel(volumeInfo.playerModel);
+});
+
 /*****************************************************************************
  * Handle Pairing
  ****************************************************************************/

@@ -27,8 +27,11 @@ export interface DpadModeOptions {
 class DpadModeController {
   private active = false;
   private keypressHandler?: (chunk: string, key: readline.Key) => void;
+  private headerLabel?: string;
 
-  constructor(private readonly options: DpadModeOptions) {}
+  constructor(private readonly options: DpadModeOptions) {
+    this.headerLabel = 'Android TV';
+  }
 
   start(): void {
     if (this.active) {
@@ -50,29 +53,7 @@ class DpadModeController {
     process.stdin.resume();
     process.stdin.setRawMode?.(true);
 
-    console.clear();
-    const remoteArt = [
-      '        ┌──────────┐',
-      '        │          │',
-      '┌───────┴──────────┴───────┐',
-      '│           ^              │',
-      '│       <   ○   >          │',
-      '│           v              │',
-      '├──────────┬───────────────┤',
-      '│ ⌨ Select │ Enter key     │',
-      '│ 🔙 Back  │ Backspace key │',
-      '├──────────┼───────────────┤',
-      '│ 🔊 Vol ↑ │ + key         │',
-      '│ 🔉 Vol ↓ │ - key         │',
-      '│ 🔇 Mute  │ m key         │',
-      '│ 🏠 Home  │ h key         │',
-      '│ 🔢 0-9   │ number keys   │',
-      '├──────────┴───────────────┤',
-      '│ ESC returns to menu      │',
-      '│ Ctrl+C exits app         │',
-      '└──────────────────────────┘',
-    ];
-    remoteArt.forEach((line) => console.log(line));
+    this.renderRemote();
 
     this.keypressHandler = (_chunk, key) => {
       if (!key) {
@@ -196,6 +177,59 @@ class DpadModeController {
     }
 
     return undefined;
+  }
+
+  setHeaderLabel(label: string | undefined): void {
+    this.headerLabel = label;
+    if (this.active) {
+      this.renderRemote();
+    }
+  }
+
+  private renderRemote(): void {
+    console.clear();
+    const [headerTop, headerMiddle] = this.buildHeaderLines();
+    const remoteArt = [
+      headerTop,
+      headerMiddle,
+      '├──────────────────────────┤',
+      '│           ^              │',
+      '│       <   ○   >          │',
+      '│           v              │',
+      '├──────────┬───────────────┤',
+      '│ ⌨ Select │ Enter key     │',
+      '│ 🔙 Back  │ Backspace key │',
+      '├──────────┼───────────────┤',
+      '│ 🔊 Vol ↑ │ + key         │',
+      '│ 🔉 Vol ↓ │ - key         │',
+      '│ 🔇 Mute  │ m key         │',
+      '│ 🏠 Home  │ h key         │',
+      '│ 🔢 0-9   │ number keys   │',
+      '├──────────┴───────────────┤',
+      '│ ESC returns to menu      │',
+      '│ Ctrl+C exits app         │',
+      '└──────────────────────────┘',
+    ];
+    remoteArt.forEach((line) => console.log(line));
+  }
+
+  private buildHeaderLines(): [string, string] {
+    const interiorWidth = 26;
+    const content = this.buildHeaderContent(interiorWidth);
+    const top = `┌${'─'.repeat(interiorWidth)}┐`;
+    const middle = `│${content}│`;
+    return [top, middle];
+  }
+
+  private buildHeaderContent(width: number): string {
+    const trimmedLabel = this.headerLabel?.trim();
+    const fallback = 'Android TV';
+    const text = trimmedLabel && trimmedLabel.length > 0 ? trimmedLabel : fallback;
+    const clipped = text.length > width ? text.slice(0, width) : text;
+    const spaceCount = width - clipped.length;
+    const leftPadding = Math.floor(spaceCount / 2);
+    const rightPadding = spaceCount - leftPadding;
+    return `${' '.repeat(leftPadding)}${clipped}${' '.repeat(rightPadding)}`;
   }
 
   exit(shouldRestartMenu = true): void {

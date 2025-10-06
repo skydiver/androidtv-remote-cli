@@ -89,6 +89,7 @@ class RemoteManager extends EventEmitter {
               level: message.remoteSetVolumeLevel.volumeLevel,
               maximum: message.remoteSetVolumeLevel.volumeMax,
               muted: message.remoteSetVolumeLevel.volumeMuted,
+              playerModel: message.remoteSetVolumeLevel.playerModel,
             });
             //console.debug("Receive SET VOLUME LEVEL" + message.remoteSetVolumeLevel.toJSON().toString());
           } else if (message.remoteSetPreferredAudioDevice) {
