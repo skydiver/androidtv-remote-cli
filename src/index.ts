@@ -154,6 +154,7 @@ androidRemote.on('volume', (volumeInfo: { playerModel?: string } | undefined) =>
   }
 
   dpadMode?.setHeaderLabel(volumeInfo.playerModel);
+  menu.setHeaderLabel(volumeInfo.playerModel);
 });
 
 /*****************************************************************************

@@ -24,6 +24,7 @@ export class MenuUI {
   private running = false;
   private processingSelection = false;
   private keypressConfigured = false;
+  private headerLabel?: string;
   private readonly handleKeypressBound: (_: string, key: readline.Key) => void;
 
   constructor(options: MenuOptions) {
@@ -83,6 +84,13 @@ export class MenuUI {
 
   getStatus(): string {
     return this.statusMessage;
+  }
+
+  setHeaderLabel(label: string | undefined): void {
+    this.headerLabel = label?.trim();
+    if (this.running && !this.processingSelection) {
+      this.render();
+    }
   }
 
   setSelectionIndex(index: number): void {
@@ -172,7 +180,8 @@ export class MenuUI {
   }
 
   private render(): void {
-    const menuTitle = 'Android TV Remote';
+    const headerText = this.headerLabel && this.headerLabel.length > 0 ? this.headerLabel : 'Android TV Remote';
+    const menuTitle = headerText;
     const instructions = '↑/↓ Move  Enter Select  Ctrl+C Exit';
 
     const optionLines = this.items.map((item, idx) => {
