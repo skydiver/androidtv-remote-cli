@@ -30,6 +30,11 @@ const options = {
  ****************************************************************************/
 const androidRemote = new AndroidRemote(settings.host, options);
 
+const cliArgs = process.argv.slice(2);
+const primaryCommand = cliArgs[0];
+const shouldAutoStartDpad = primaryCommand === 'dpad';
+let pendingDpadStart = shouldAutoStartDpad;
+
 const menuItems: MenuItem[] = [
   { label: '🎮  D-pad Controls', action: 'dpad' },
   { label: '🏠  Home', action: 'home' },
@@ -112,7 +117,10 @@ androidRemote.on('ready', async () => {
 
   if (!shuttingDown) {
     menu.setStatus(formatStatus('Connected to device.'));
-    if (!dpadMode?.isActive()) {
+    if (pendingDpadStart) {
+      pendingDpadStart = false;
+      dpadMode?.start();
+    } else if (!dpadMode?.isActive()) {
       menu.start();
     }
   }
@@ -143,14 +151,17 @@ androidRemote.on('secret', () => {
       dpadMode.exit(false);
     }
     menu.stop();
+    pendingDpadStart = pendingDpadStart || wasInDpadMode;
 
     try {
       const code = await menu.promptPairingCode();
       androidRemote.sendCode(code.trim());
 
-      if ((wasRunning || wasInDpadMode) && !shuttingDown) {
+      if (!shuttingDown) {
         menu.setStatus(formatStatus('Pairing code sent. Waiting for device...'));
-        menu.start();
+        if (!pendingDpadStart && (wasRunning || wasInDpadMode)) {
+          menu.start();
+        }
       }
     } catch (_error) {
       if (!shuttingDown) {
