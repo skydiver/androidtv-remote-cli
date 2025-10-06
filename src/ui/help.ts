@@ -5,6 +5,7 @@ export interface HelpScreenOptions {
   menu: MenuUI;
   exitApp: () => void;
   formatStatus: (message: string) => string;
+  appVersion: string;
 }
 
 class HelpScreenController {
@@ -107,6 +108,7 @@ class HelpScreenController {
   private getHelpLines(): string[] {
     return [
       'Android TV Remote CLI Help',
+      `Software Version: ${this.options.appVersion}`,
       '',
       'Usage:',
       '  tvrc                   Start interactive menu',

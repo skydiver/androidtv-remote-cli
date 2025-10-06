@@ -10,6 +10,7 @@ import {
 import DpadModeController from './ui/dpad-mode';
 import { isDebugMode, setDebugMode } from './debug';
 import HelpScreenController from './ui/help';
+import packageInfo from '../package.json' assert { type: 'json' };
 
 /*****************************************************************************
  * Initialize Settings Storage
@@ -48,6 +49,8 @@ const menuItems: MenuItem[] = [
 ];
 
 let shuttingDown = false;
+const appVersion = typeof packageInfo.version === 'string' ? packageInfo.version : 'unknown';
+
 const menu = new MenuUI({
   items: menuItems,
   onAction: handleMenuAction,
@@ -95,6 +98,7 @@ helpScreen = new HelpScreenController({
   menu,
   exitApp,
   formatStatus,
+  appVersion,
 });
 
 setDebugMode(false);
