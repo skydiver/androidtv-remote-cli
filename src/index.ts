@@ -1,29 +1,17 @@
-import { AndroidRemote } from './lib/androidtv-remote';
-import MenuUI, { type MenuAction, type MenuItem } from './ui/menu';
-import {
-  homeCommand,
-  exitCommand,
-  muteCommand,
-  powerCommand,
-} from './ui/menu-commands';
-import DpadModeController from './ui/dpad-mode';
-import { isDebugMode, setDebugMode } from './debug';
-import HelpScreenController from './ui/help';
 import packageInfo from '../package.json' assert { type: 'json' };
+import { isDebugMode, setDebugMode } from './debug';
+import { AndroidRemote } from './lib/androidtv-remote';
 import { getSetting, setSetting } from './settings';
 import { abortSetup, ensureHost } from './setup';
+import DpadModeController from './ui/dpad-mode';
+import HelpScreenController from './ui/help';
+import MenuUI, { type MenuAction, type MenuItem } from './ui/menu';
+import { exitCommand, homeCommand, muteCommand, powerCommand } from './ui/menu-commands';
 
 /*****************************************************************************
- * Initialize Settings Storage
+ * Check if Android TV host is set up
  ****************************************************************************/
-type StoredCertificate = {
-  key?: string;
-  cert?: string;
-} | undefined;
-
 const host = await ensureHost().catch(abortSetup);
-
-const storedCert = getSetting<StoredCertificate>('cert');
 
 /*****************************************************************************
  * Options for the connection
@@ -32,7 +20,7 @@ const options = {
   pairing_port: 6467,
   remote_port: 6466,
   name: 'androidtv-remote',
-  cert: storedCert,
+  cert: getSetting('cert'),
 };
 
 /*****************************************************************************
@@ -44,7 +32,8 @@ type PendingMode = 'dpad' | 'help' | null;
 
 const cliArgs = process.argv.slice(2);
 const primaryCommand = cliArgs[0];
-let pendingMode: PendingMode = primaryCommand === 'dpad' ? 'dpad' : primaryCommand === 'help' ? 'help' : null;
+let pendingMode: PendingMode =
+  primaryCommand === 'dpad' ? 'dpad' : primaryCommand === 'help' ? 'help' : null;
 
 const menuItems: MenuItem[] = [
   { label: '🎮  D-pad Controls', action: 'dpad' },
