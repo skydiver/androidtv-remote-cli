@@ -162,6 +162,13 @@ Vitest is configured but no tests ship with the repo; add your own under `src/` 
 
 ---
 
+## Credits
+
+This project builds on [`androidtvremote2`](https://github.com/tronikos/androidtvremote2/) by TroniKOS. The upstream library is Apache-2.0 licensed; we vendor a modified copy of that package under `src/lib/androidtv-remote` so we can ship our CLI-specific fixes while we work to upstream them.
+
+If you rely on the vendored code, please review the [`LICENSE-APACHE`](https://www.apache.org/licenses/LICENSE-2.0) terms from the original project.
+
+
 ## License
 
 [MIT](./LICENSE) © Martín M.
