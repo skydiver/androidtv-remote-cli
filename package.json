@@ -16,6 +16,7 @@
     "lint:check": "biome check .",
     "lint:fix": "biome check --fix .",
     "lint:format": "biome format --write .",
+    "type:check": "tsc --noEmit",
     "start": "tsx src/index.ts",
     "test": "vitest src",
     "test:coverage": "vitest run --coverage"
