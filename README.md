@@ -76,7 +76,7 @@ pnpm dev
 2. Run `pnpm start` (or `./build/tvrc` after a build).
 3. When prompted, enter the TV’s IP address. The address is saved via [`conf`](https://github.com/sindresorhus/conf) so you only do this once.
 4. The TV will display a pairing code on screen. Enter the code in the terminal prompt.
-5. Pairing certificates are stored in your OS-specific config directory (e.g. `~/Library/Preferences/androidtv/settings.json` on macOS, `%APPDATA%/androidtv/settings.json` on Windows, `~/.config/androidtv/settings.json` on Linux).
+5. Pairing certificates are stored in your OS-specific config directory (e.g. `~/Library/Preferences/androidtv/settings.json` on macOS, `%APPDATA%/androidtv/settings.json` on Windows, `~/.config/androidtv/settings.json` on Linux). Run `tvrc config` any time to print the exact path for your machine.
 
 Subsequent launches reuse the stored host and certificate, skipping the prompts unless the TV invalidates them.
 
@@ -138,7 +138,7 @@ Settings persist across runs:
 - `host`: Android TV IP address.
 - `cert`: Pairing certificate and key.
 
-To reset pairing, remove the `androidtv/settings.json` file in your platform’s config directory and rerun the CLI.
+To reset pairing, delete the settings file (see `tvrc config` for the precise path) and rerun the CLI.
 
 ---
 
@@ -164,7 +164,7 @@ Vitest is configured but no tests ship with the repo; add your own under `src/` 
 - **Pairing fails immediately**: Confirm the TV displays a pairing code and that ports 6466/6467 are open.
 - **TTY errors**: Ensure you’re running in an interactive terminal (no piping or background execution).
 - **Device disconnected mid-session**: The remote manager auto-reconnects, but you may need to rerun the CLI if the TV power cycles.
-- **Need to re-pair**: Delete the stored config file (`androidtv/settings.json`) and start over.
+- **Need to re-pair**: Delete the stored config file (run `tvrc config` to locate it) and start over.
 - **Debugging**: Toggle the debug option in the menu to see raw event logs in the terminal.
 
 ---
