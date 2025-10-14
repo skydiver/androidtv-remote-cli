@@ -6,6 +6,7 @@ export type MenuAction = 'mute' | 'power' | 'home' | 'debug' | 'dpad' | 'help' |
 export type MenuItem = {
   label: string;
   action: MenuAction;
+  shortcut?: string;
 };
 
 export type MenuActionHandler = (action: MenuAction) => Promise<string | void> | string | void;
@@ -187,6 +188,22 @@ export class MenuUI {
       return;
     }
 
+    if (key.name && key.name.length === 1 && !key.ctrl && !key.meta) {
+      const shortcutIndex = this.items.findIndex(
+        (item) => item.shortcut?.toLowerCase() === key.name?.toLowerCase()
+      );
+
+      if (shortcutIndex !== -1) {
+        this.selectionIndex = shortcutIndex;
+        if (this.running && !this.processingSelection) {
+          this.render();
+        }
+        const currentItem = this.items[shortcutIndex];
+        void this.triggerAction(currentItem.action);
+        return;
+      }
+    }
+
     if (key.name === 'return' || key.name === 'enter') {
       const currentItem = this.items[this.selectionIndex];
       void this.triggerAction(currentItem.action);
@@ -201,7 +218,8 @@ export class MenuUI {
 
     const optionLines = this.items.map((item, idx) => {
       const prefix = idx === this.selectionIndex ? '›' : ' ';
-      return `${prefix} ${item.label}`;
+      const label = this.formatItemLabel(item);
+      return `${prefix} ${label}`;
     });
 
     const contentWidth = Math.max(
@@ -240,6 +258,14 @@ export class MenuUI {
 
   private clearScreen(): void {
     process.stdout.write('\x1b[2J\x1b[0f');
+  }
+
+  private formatItemLabel(item: MenuItem): string {
+    if (!item.shortcut) {
+      return item.label;
+    }
+
+    return `${item.label} (${item.shortcut.toUpperCase()})`;
   }
 }
 

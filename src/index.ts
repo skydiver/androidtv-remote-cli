@@ -36,13 +36,13 @@ let pendingMode: PendingMode =
   primaryCommand === 'dpad' ? 'dpad' : primaryCommand === 'help' ? 'help' : null;
 
 const menuItems: MenuItem[] = [
-  { label: '🎮  D-pad Controls', action: 'dpad' },
-  { label: '🏠  Home', action: 'home' },
-  { label: '🔇  Mute', action: 'mute' },
-  { label: '🔌  Power', action: 'power' },
-  { label: '🐞  Debug', action: 'debug' },
-  { label: 'ℹ️  Help', action: 'help' },
-  { label: '🚪  Exit', action: 'exit' },
+  { label: '🎮  D-pad Controls', action: 'dpad', shortcut: 'd' },
+  { label: '🏠  Home', action: 'home', shortcut: 'h' },
+  { label: '🔇  Mute', action: 'mute', shortcut: 'm' },
+  { label: '🔌  Power', action: 'power', shortcut: 'p' },
+  { label: '🐞  Debug', action: 'debug', shortcut: 'g' },
+  { label: 'ℹ️  Help', action: 'help', shortcut: 'i' },
+  { label: '🚪  Exit', action: 'exit', shortcut: 'e' },
 ];
 
 let shuttingDown = false;
