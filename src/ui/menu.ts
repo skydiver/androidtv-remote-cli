@@ -216,10 +216,11 @@ export class MenuUI {
     const instructions = '↑/↓ Move  Enter Select  Ctrl+C Exit';
     const debugLine = this.debugStatus;
 
-    const optionLines = this.items.map((item, idx) => {
-      const prefix = idx === this.selectionIndex ? '›' : ' ';
-      const label = this.formatItemLabel(item);
-      return `${prefix} ${label}`;
+    const optionMetadata = this.items.map((item) => {
+      const shortcutText = item.shortcut ? `(${item.shortcut.toUpperCase()})` : undefined;
+      const shortcutLength = shortcutText ? shortcutText.length + 1 : 0;
+      const lineLength = 2 + item.label.length + shortcutLength;
+      return { item, shortcutText, lineLength };
     });
 
     const contentWidth = Math.max(
@@ -227,8 +228,14 @@ export class MenuUI {
       instructions.length,
       this.statusMessage.length,
       debugLine.length,
-      ...optionLines.map((line) => line.length)
+      ...optionMetadata.map((meta) => meta.lineLength)
     );
+
+    const optionLines = optionMetadata.map(({ item, shortcutText }, idx) => {
+      const prefix = idx === this.selectionIndex ? '›' : ' ';
+      const label = this.formatItemLabel(item, shortcutText, contentWidth - 2);
+      return `${prefix} ${label}`;
+    });
 
     const horizontal = '─'.repeat(contentWidth + 2);
 
@@ -260,12 +267,48 @@ export class MenuUI {
     process.stdout.write('\x1b[2J\x1b[0f');
   }
 
-  private formatItemLabel(item: MenuItem): string {
-    if (!item.shortcut) {
-      return item.label;
+  private formatItemLabel(
+    item: MenuItem,
+    shortcutText: string | undefined,
+    availableWidth: number
+  ): string {
+    if (availableWidth <= 0) {
+      return '';
     }
 
-    return `${item.label} (${item.shortcut.toUpperCase()})`;
+    if (!shortcutText) {
+      return this.padRight(this.truncate(item.label, availableWidth), availableWidth);
+    }
+
+    const shortcutLength = Math.min(shortcutText.length, Math.max(availableWidth - 1, 0));
+    const effectiveShortcut = shortcutText.slice(0, shortcutLength);
+    const labelSpace = Math.max(availableWidth - shortcutLength, 0);
+    if (labelSpace === 0) {
+      return this.padRight(effectiveShortcut, availableWidth);
+    }
+    const labelMaxWidth = Math.max(labelSpace - 1, 0);
+    const truncatedLabel = this.truncate(item.label, labelMaxWidth);
+    const paddedLabel = this.padRight(truncatedLabel, labelMaxWidth);
+    const gapWidth = Math.max(labelSpace - paddedLabel.length, 1);
+    const gap = ' '.repeat(gapWidth);
+    const line = `${paddedLabel}${gap}${effectiveShortcut}`;
+    return line.length > availableWidth ? line.slice(0, availableWidth) : this.padRight(line, availableWidth);
+  }
+
+  private truncate(text: string, width: number): string {
+    if (width <= 0) {
+      return '';
+    }
+
+    return text.length > width ? text.slice(0, width) : text;
+  }
+
+  private padRight(text: string, width: number): string {
+    if (width <= 0) {
+      return '';
+    }
+
+    return text.length >= width ? text.slice(0, width) : text.padEnd(width, ' ');
   }
 }
 
