@@ -97,28 +97,33 @@ You can launch straight into different modes:
 - `Enter`: Run the selected command.
 - `Esc`, `Ctrl+C`, or `q`: Exit the application.
 
-Menu options include:
-- 🎮 D-pad Controls — switch to keyboard-driven remote mode.
-- 🏠 Home — send the HOME command.
-- 🔇 Mute — toggle mute.
-- 🔌 Power — toggle device power.
-- 🐞 Debug — enable/disable verbose console logging.
-- ℹ️ Help — display in-terminal usage instructions.
-- 🚪 Exit — close the app.
+Each menu item also has an instant shortcut key that runs the action without moving through the list:
+
+| Menu Item        | Shortcut | Action                                         |
+| ---------------- | -------- | ---------------------------------------------- |
+| 🎮 D-pad Controls | `D`      | Switch to keyboard-driven remote mode.        |
+| 🏠 Home           | `H`      | Send the HOME command.                         |
+| 🔇 Mute           | `M`      | Toggle mute.                                   |
+| 🔌 Power          | `P`      | Toggle device power.                           |
+| 🐞 Debug          | `G`      | Enable or disable verbose console logging.     |
+| ℹ️ Help           | `I`      | Display in-terminal usage instructions.        |
+| 🚪 Exit           | `E`      | Close the app.                                 |
 
 ### D-pad Mode
 
 Once activated, the terminal renders a virtual remote. Controls:
 
-- Arrow keys: D-pad navigation.
-- `Enter` / `Space`: Select / OK.
-- `Backspace`: Back.
-- `h`: Home.
-- `m`: Mute.
-- `+` / `-`: Volume up / down.
-- `0`–`9`: Number pad.
-- `Esc`: Return to menu.
-- `Ctrl+C`: Exit the application.
+| Input            | Action                     |
+| ---------------- | -------------------------- |
+| Arrow keys       | D-pad navigation.          |
+| `Enter` / `Space`| Select / OK.               |
+| `Backspace`      | Back.                      |
+| `h`              | Home.                      |
+| `m`              | Mute.                      |
+| `+` / `-`        | Volume up / down.          |
+| `0`–`9`          | Number pad.                |
+| `Esc`            | Return to menu.            |
+| `Ctrl+C`         | Exit the application.      |
 
 D-pad and help modes both require a TTY; if one isn’t available the app falls back to the menu and shows a status warning.
 
