@@ -15,7 +15,30 @@ const cliArgs = process.argv.slice(2);
 const primaryCommand = cliArgs[0];
 
 if (primaryCommand === 'config') {
-  console.log(`Config file path: ${settings.path}`);
+  const lines = [
+    'Android TV Remote CLI Configuration',
+    '',
+    `📁 Config file path: ${settings.path}`,
+    '',
+    '🧹 Delete this file to reset pairing.',
+  ];
+
+  const contentWidth = Math.max(...lines.map((line) => line.length));
+  const horizontal = '─'.repeat(contentWidth + 2);
+  const buildLine = (text: string) => {
+    const padded = text.padEnd(contentWidth, ' ');
+    return `│ ${padded} │`;
+  };
+
+  const frame = [
+    `┌${horizontal}┐`,
+    buildLine(lines[0]),
+    `├${horizontal}┤`,
+    ...lines.slice(1).map((line) => buildLine(line)),
+    `└${horizontal}┘`,
+  ];
+
+  console.log(frame.join('\n'));
   process.exit(0);
 }
 
