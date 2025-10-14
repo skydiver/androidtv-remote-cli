@@ -37,12 +37,12 @@ class RemoteMessageManager {
       console.debug('Create Remote ' + JSON.stringify(payload));
     }
 
-    let errMsg = this.RemoteMessage.verify(payload);
+    const errMsg = this.RemoteMessage.verify(payload);
     if (errMsg) throw Error(errMsg);
 
-    let message = this.RemoteMessage.create(payload);
+    const message = this.RemoteMessage.create(payload);
 
-    let array = this.RemoteMessage.encodeDelimited(message).finish();
+    const array = this.RemoteMessage.encodeDelimited(message).finish();
 
     if (!payload.remotePingResponse) {
       //console.debug("Sending " + Array.from(array));
@@ -52,7 +52,7 @@ class RemoteMessageManager {
     return array;
   }
 
-  createRemoteConfigure(code1, model, vendor, unknown1, unknown2) {
+  createRemoteConfigure(_code1, _model, _vendor, _unknown1, _unknown2) {
     return this.create({
       remoteConfigure: {
         code1: 622,
@@ -128,6 +128,6 @@ class RemoteMessageManager {
     return this.RemoteMessage.decodeDelimited(buffer);
   }
 }
-let remoteMessageManager = new RemoteMessageManager();
+const remoteMessageManager = new RemoteMessageManager();
 
 export { remoteMessageManager };

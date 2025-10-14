@@ -20,7 +20,9 @@ class HelpScreenController {
     }
 
     if (!process.stdin.isTTY || !process.stdout.isTTY) {
-      this.options.menu.setStatus(this.options.formatStatus('Help screen requires a TTY environment.'));
+      this.options.menu.setStatus(
+        this.options.formatStatus('Help screen requires a TTY environment.')
+      );
       if (!this.options.menu.isRunning()) {
         this.options.menu.start();
       }
@@ -49,7 +51,12 @@ class HelpScreenController {
         return;
       }
 
-      if (key.name === 'escape' || key.name === 'return' || key.name === 'enter' || key.name === 'space') {
+      if (
+        key.name === 'escape' ||
+        key.name === 'return' ||
+        key.name === 'enter' ||
+        key.name === 'space'
+      ) {
         this.exit();
       }
     };
@@ -95,11 +102,7 @@ class HelpScreenController {
       return `│ ${padded} │`;
     };
 
-    const frame = [
-      `┌${horizontal}┐`,
-      ...lines.map((line) => buildLine(line)),
-      `└${horizontal}┘`,
-    ];
+    const frame = [`┌${horizontal}┐`, ...lines.map((line) => buildLine(line)), `└${horizontal}┘`];
 
     frame.forEach((line) => console.log(line));
     console.log('\nPress Esc or Enter to return to the menu. Ctrl+C exits the app.');
