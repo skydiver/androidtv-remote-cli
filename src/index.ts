@@ -1,12 +1,23 @@
 import packageInfo from '../package.json' assert { type: 'json' };
 import { isDebugMode, setDebugMode } from './debug';
 import { AndroidRemote } from './lib/androidtv-remote';
-import { getSetting, setSetting } from './settings';
+import settings, { getSetting, setSetting } from './settings';
 import { abortSetup, ensureHost } from './setup';
 import DpadModeController from './ui/dpad-mode';
 import HelpScreenController from './ui/help';
 import MenuUI, { type MenuAction, type MenuItem } from './ui/menu';
 import { exitCommand, homeCommand, muteCommand, powerCommand } from './ui/menu-commands';
+
+/*****************************************************************************
+ * Handle CLI arguments that short-circuit the app
+ ****************************************************************************/
+const cliArgs = process.argv.slice(2);
+const primaryCommand = cliArgs[0];
+
+if (primaryCommand === 'config') {
+  console.log(`Config file path: ${settings.path}`);
+  process.exit(0);
+}
 
 /*****************************************************************************
  * Check if Android TV host is set up
@@ -30,8 +41,6 @@ const androidRemote = new AndroidRemote(host, options);
 
 type PendingMode = 'dpad' | 'help' | null;
 
-const cliArgs = process.argv.slice(2);
-const primaryCommand = cliArgs[0];
 let pendingMode: PendingMode =
   primaryCommand === 'dpad' ? 'dpad' : primaryCommand === 'help' ? 'help' : null;
 

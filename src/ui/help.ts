@@ -114,6 +114,7 @@ class HelpScreenController {
       '  tvrc                   Start interactive menu',
       '  tvrc dpad              Jump directly to D-pad controls',
       '  tvrc help              Show this help screen first',
+      '  tvrc config            Print config file path and exit',
       '',
       'Main Menu Options:',
       '  🎮  D-pad Controls  Enter keyboard-based remote mode',

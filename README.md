@@ -7,6 +7,7 @@ Android TV Remote CLI is a Node.js terminal application that lets you drive any 
 ## Features
 
 - Interactive terminal UI with menu shortcuts for power, mute, home, debug, and exit.
+- Non-interactive `tvrc config` command that prints the settings file location.
 - Full keyboard-driven D-pad mode with on-screen guidance and number key support.
 - Secure certificate-based pairing; credentials persist between sessions.
 - One-time host discovery that stores the Android TV IP address for reuse.
@@ -89,6 +90,7 @@ You can launch straight into different modes:
 ./build/tvrc         # Start with the interactive menu
 ./build/tvrc dpad    # Jump directly to D-pad mode
 ./build/tvrc help    # Show the help screen first
+./build/tvrc config  # Print the config file path and exit
 ```
 
 ### Main Menu Controls
