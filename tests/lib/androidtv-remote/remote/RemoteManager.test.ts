@@ -69,7 +69,7 @@ vi.mock('tls', () => ({
   },
 }));
 
-vi.mock('../src/lib/androidtv-remote/remote/RemoteMessageManager.js', () => ({
+vi.mock('~/lib/androidtv-remote/remote/RemoteMessageManager.js', () => ({
   remoteMessageManager: remoteMessages.manager,
 }));
 
@@ -96,7 +96,7 @@ describe('RemoteManager', () => {
   });
 
   const getManager = async () => {
-    const { RemoteManager } = await import('../src/lib/androidtv-remote/remote/RemoteManager.js');
+    const { RemoteManager } = await import('~/lib/androidtv-remote/remote/RemoteManager.js');
     return new RemoteManager(
       'host',
       6466,

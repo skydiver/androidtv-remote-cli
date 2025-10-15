@@ -9,7 +9,7 @@ vi.mock('enquirer', () => {
 });
 
 import enquirer from 'enquirer';
-import MenuUI, { type MenuAction, type MenuItem } from '../src/ui/menu';
+import MenuUI, { type MenuAction, type MenuItem } from '~/ui/menu';
 
 class MockStdin extends EventEmitter {
   resume = vi.fn();

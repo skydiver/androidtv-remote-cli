@@ -15,14 +15,14 @@ const commandMocks = vi.hoisted(() => ({
   volumeUpCommand: vi.fn(),
 }));
 
-vi.mock('../src/ui/menu-commands', () => commandMocks);
+vi.mock('~/ui/menu-commands', () => commandMocks);
 
-vi.mock('../src/lib/androidtv-remote', () => ({
+vi.mock('~/lib/androidtv-remote', () => ({
   AndroidRemote: vi.fn(),
 }));
 
-import DpadModeController from '../src/ui/dpad-mode';
-import { setDebugMode } from '../src/debug';
+import DpadModeController from '~/ui/dpad-mode';
+import { setDebugMode } from '~/debug';
 
 type KeyHandler = (chunk: string, key: readline.Key) => void;
 

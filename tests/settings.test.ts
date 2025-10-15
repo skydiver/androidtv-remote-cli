@@ -26,7 +26,7 @@ vi.mock('conf', () => {
   };
 });
 
-const loadSettingsModule = async () => import('../src/settings');
+const loadSettingsModule = async () => import('~/settings');
 
 beforeEach(async () => {
   const mockConf = await import('conf');

@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
-import type { AndroidRemote } from '../src/lib/androidtv-remote';
-import type MenuUI from '../src/ui/menu';
+import type { AndroidRemote } from '~/lib/androidtv-remote';
+import type MenuUI from '~/ui/menu';
 import {
   backCommand,
   dpadDownCommand,
@@ -16,9 +16,9 @@ import {
   selectCommand,
   volumeDownCommand,
   volumeUpCommand,
-} from '../src/ui/menu-commands';
+} from '~/ui/menu-commands';
 
-vi.mock('../src/lib/androidtv-remote', () => ({
+vi.mock('~/lib/androidtv-remote', () => ({
   RemoteDirection: { SHORT: 'SHORT' },
   RemoteKeyCode: {
     KEYCODE_HOME: 'HOME',

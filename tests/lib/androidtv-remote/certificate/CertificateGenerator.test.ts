@@ -80,7 +80,7 @@ describe('CertificateGenerator', () => {
       .mockReturnValue(randomBuffer);
 
     const { CertificateGenerator } = await import(
-      '../src/lib/androidtv-remote/certificate/CertificateGenerator.js'
+      '~/lib/androidtv-remote/certificate/CertificateGenerator.js'
     );
 
     const result = CertificateGenerator.generateFull(

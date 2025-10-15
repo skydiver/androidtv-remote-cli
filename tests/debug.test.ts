@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { isDebugMode, setDebugMode } from '../src/debug';
+import { isDebugMode, setDebugMode } from '~/debug';
 
 const nativeDebug = console.debug;
 let disabledDebugFn: typeof console.debug;

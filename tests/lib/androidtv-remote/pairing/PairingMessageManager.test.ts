@@ -76,7 +76,7 @@ vi.mock('node:path', () => pathState);
 vi.mock('node:url', () => urlState);
 
 const loadManager = async () => {
-  const mod = await import('../src/lib/androidtv-remote/pairing/PairingMessageManager.js');
+  const mod = await import('~/lib/androidtv-remote/pairing/PairingMessageManager.js');
   const promise = systemState.system.mock.results.at(-1)?.value;
   if (promise) {
     await promise;
@@ -87,7 +87,7 @@ const loadManager = async () => {
 describe('PairingMessageManager', () => {
   beforeEach(() => {
     vi.resetModules();
-    vi.doMock('../src/lib/androidtv-remote/pairing/pairingmessage.proto', () => ({
+    vi.doMock('~/lib/androidtv-remote/pairing/pairingmessage.proto', () => ({
       default: 'proto-definition',
     }));
     protoState.parse.mockClear();
@@ -215,7 +215,7 @@ describe('PairingMessageManager', () => {
     protoState.parse.mockClear();
     fsState.readFileSync.mockClear();
     vi.resetModules();
-    vi.doMock('../src/lib/androidtv-remote/pairing/pairingmessage.proto', () => ({
+    vi.doMock('~/lib/androidtv-remote/pairing/pairingmessage.proto', () => ({
       get default() {
         throw new TypeError('Unknown file extension');
       },
@@ -236,7 +236,7 @@ describe('PairingMessageManager', () => {
     protoState.parse.mockClear();
     fsState.readFileSync.mockClear();
     vi.resetModules();
-    vi.doMock('../src/lib/androidtv-remote/pairing/pairingmessage.proto', () => ({
+    vi.doMock('~/lib/androidtv-remote/pairing/pairingmessage.proto', () => ({
       get default() {
         throw new Error('boom');
       },

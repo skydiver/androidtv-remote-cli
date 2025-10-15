@@ -78,7 +78,7 @@ vi.mock('node:path', () => pathState);
 vi.mock('node:url', () => urlState);
 
 const loadManager = async () => {
-  const mod = await import('../src/lib/androidtv-remote/remote/RemoteMessageManager.js');
+  const mod = await import('~/lib/androidtv-remote/remote/RemoteMessageManager.js');
   const promise = systemState.system.mock.results.at(-1)?.value;
   if (promise) {
     await promise;
@@ -89,7 +89,7 @@ const loadManager = async () => {
 describe('RemoteMessageManager', () => {
   beforeEach(() => {
     vi.resetModules();
-    vi.doMock('../src/lib/androidtv-remote/remote/remotemessage.proto', () => ({
+    vi.doMock('~/lib/androidtv-remote/remote/remotemessage.proto', () => ({
       default: 'remote-proto',
     }));
     protoState.parse.mockClear();
@@ -212,7 +212,7 @@ describe('RemoteMessageManager', () => {
   it('falls back to filesystem when proto import fails', async () => {
     const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
     vi.resetModules();
-    vi.doMock('../src/lib/androidtv-remote/remote/remotemessage.proto', () => ({
+    vi.doMock('~/lib/androidtv-remote/remote/remotemessage.proto', () => ({
       get default() {
         throw new TypeError('Unknown file extension');
       },
@@ -232,7 +232,7 @@ describe('RemoteMessageManager', () => {
   it('rethrows unexpected errors during proto import', async () => {
     const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
     vi.resetModules();
-    vi.doMock('../src/lib/androidtv-remote/remote/remotemessage.proto', () => ({
+    vi.doMock('~/lib/androidtv-remote/remote/remotemessage.proto', () => ({
       get default() {
         throw new Error('boom');
       },

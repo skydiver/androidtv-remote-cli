@@ -1,7 +1,7 @@
 import readline from 'readline';
 import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
-import type MenuUI from '../src/ui/menu';
-import HelpScreenController from '../src/ui/help';
+import type MenuUI from '~/ui/menu';
+import HelpScreenController from '~/ui/help';
 
 type KeyHandler = (chunk: string, key: readline.Key) => void;
 

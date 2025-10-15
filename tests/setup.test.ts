@@ -34,8 +34,8 @@ vi.mock('conf', () => {
   };
 });
 
-const importSetup = () => import('../src/setup');
-const importSettings = () => import('../src/settings');
+const importSetup = () => import('~/setup');
+const importSettings = () => import('~/settings');
 
 beforeEach(async () => {
   promptMock.mockReset();

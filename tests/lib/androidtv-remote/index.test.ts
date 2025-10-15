@@ -14,13 +14,13 @@ const mockState = vi.hoisted(() => ({
   remoteStop: vi.fn(),
 }));
 
-vi.mock('../src/lib/androidtv-remote/certificate/CertificateGenerator.js', () => ({
+vi.mock('~/lib/androidtv-remote/certificate/CertificateGenerator.js', () => ({
   CertificateGenerator: {
     generateFull: (...args: unknown[]) => mockState.generateFull(...args),
   },
 }));
 
-vi.mock('../src/lib/androidtv-remote/pairing/PairingManager.js', () => {
+vi.mock('~/lib/androidtv-remote/pairing/PairingManager.js', () => {
   return {
     PairingManager: class PairingManager extends EventEmitter {
       host: string;
@@ -51,7 +51,7 @@ vi.mock('../src/lib/androidtv-remote/pairing/PairingManager.js', () => {
   };
 });
 
-vi.mock('../src/lib/androidtv-remote/remote/RemoteManager.js', () => {
+vi.mock('~/lib/androidtv-remote/remote/RemoteManager.js', () => {
   return {
     RemoteManager: class RemoteManager extends EventEmitter {
       host: string;
@@ -92,7 +92,7 @@ vi.mock('../src/lib/androidtv-remote/remote/RemoteManager.js', () => {
   };
 });
 
-vi.mock('../src/lib/androidtv-remote/remote/RemoteMessageManager.js', () => ({
+vi.mock('~/lib/androidtv-remote/remote/RemoteMessageManager.js', () => ({
   remoteMessageManager: {
     RemoteKeyCode: { A: 'A' },
     RemoteDirection: { SHORT: 'SHORT' },
@@ -120,7 +120,7 @@ describe('AndroidRemote', () => {
 
   it('generates certificate and forwards events when starting without existing cert', async () => {
     vi.useFakeTimers();
-    const { AndroidRemote } = await import('../src/lib/androidtv-remote/index.js');
+    const { AndroidRemote } = await import('~/lib/androidtv-remote/index.js');
 
     const remote = new AndroidRemote('192.168.1.100', {
       pairing_port: 7000,
@@ -162,7 +162,7 @@ describe('AndroidRemote', () => {
 
   it('skips pairing when cert is provided and exposes RemoteKeyCode/Direction', async () => {
     vi.useFakeTimers();
-    const module = await import('../src/lib/androidtv-remote/index.js');
+    const module = await import('~/lib/androidtv-remote/index.js');
     const { AndroidRemote, RemoteKeyCode, RemoteDirection } = module;
 
     const remote = new AndroidRemote('host.local', {
@@ -182,7 +182,7 @@ describe('AndroidRemote', () => {
 
   it('returns early when pairing fails', async () => {
     vi.useFakeTimers();
-    const { AndroidRemote } = await import('../src/lib/androidtv-remote/index.js');
+    const { AndroidRemote } = await import('~/lib/androidtv-remote/index.js');
 
     mockState.pairingStartResult = false;
     const remote = new AndroidRemote('host', {} as never);
@@ -197,7 +197,7 @@ describe('AndroidRemote', () => {
 
   it('logs and stops when pairing start throws', async () => {
     vi.useFakeTimers();
-    const { AndroidRemote } = await import('../src/lib/androidtv-remote/index.js');
+    const { AndroidRemote } = await import('~/lib/androidtv-remote/index.js');
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
     mockState.pairingStartResult = () => Promise.reject(new Error('pairing failure'));
@@ -215,7 +215,7 @@ describe('AndroidRemote', () => {
 
   it('logs and continues when remote manager start throws', async () => {
     vi.useFakeTimers();
-    const { AndroidRemote } = await import('../src/lib/androidtv-remote/index.js');
+    const { AndroidRemote } = await import('~/lib/androidtv-remote/index.js');
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
     mockState.pairingStartResult = true;
@@ -233,7 +233,7 @@ describe('AndroidRemote', () => {
 
   it('logs and stops when pairing manager start rejects', async () => {
     vi.useFakeTimers();
-    const { AndroidRemote } = await import('../src/lib/androidtv-remote/index.js');
+    const { AndroidRemote } = await import('~/lib/androidtv-remote/index.js');
     const error = new Error('pairing rejection');
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
@@ -254,7 +254,7 @@ describe('AndroidRemote', () => {
 
   it('runs cleanup when pairing manager start resolves to function', async () => {
     vi.useFakeTimers();
-    const { AndroidRemote } = await import('../src/lib/androidtv-remote/index.js');
+    const { AndroidRemote } = await import('~/lib/androidtv-remote/index.js');
     const cleanup = vi.fn().mockResolvedValue(undefined);
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
@@ -274,7 +274,7 @@ describe('AndroidRemote', () => {
 
   it('delegates send methods and stop', async () => {
     vi.useFakeTimers();
-    const { AndroidRemote } = await import('../src/lib/androidtv-remote/index.js');
+    const { AndroidRemote } = await import('~/lib/androidtv-remote/index.js');
 
     const remote = new AndroidRemote('host', {} as never);
     const startPromise = remote.start();
@@ -296,7 +296,7 @@ describe('AndroidRemote', () => {
 
   it('returns certificate snapshot', async () => {
     vi.useFakeTimers();
-    const { AndroidRemote } = await import('../src/lib/androidtv-remote/index.js');
+    const { AndroidRemote } = await import('~/lib/androidtv-remote/index.js');
 
     const remote = new AndroidRemote('host', {
       cert: { key: 'initial-key', cert: 'initial-cert' },

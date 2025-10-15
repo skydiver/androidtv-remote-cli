@@ -72,7 +72,7 @@ vi.mock('tls', () => ({
   },
 }));
 
-vi.mock('../src/lib/androidtv-remote/pairing/PairingMessageManager.js', () => ({
+vi.mock('~/lib/androidtv-remote/pairing/PairingMessageManager.js', () => ({
   pairingMessageManager: pairingMessages,
 }));
 
@@ -116,7 +116,7 @@ describe('PairingManager', () => {
   it('performs pairing handshake and resolves when connection closes cleanly', async () => {
     const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
     const { PairingManager } = await import(
-      '../src/lib/androidtv-remote/pairing/PairingManager.js'
+      '~/lib/androidtv-remote/pairing/PairingManager.js'
     );
     const manager = new PairingManager(
       'localhost',
@@ -158,7 +158,7 @@ describe('PairingManager', () => {
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
     const { PairingManager } = await import(
-      '../src/lib/androidtv-remote/pairing/PairingManager.js'
+      '~/lib/androidtv-remote/pairing/PairingManager.js'
     );
     const manager = new PairingManager(
       'localhost',
@@ -187,7 +187,7 @@ describe('PairingManager', () => {
   it('sendCode writes secret when checksum matches', async () => {
     const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
     const { PairingManager } = await import(
-      '../src/lib/androidtv-remote/pairing/PairingManager.js'
+      '~/lib/androidtv-remote/pairing/PairingManager.js'
     );
     const manager = new PairingManager(
       'localhost',
@@ -215,7 +215,7 @@ describe('PairingManager', () => {
   it('sendCode destroys connection when checksum mismatches', async () => {
     const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
     const { PairingManager } = await import(
-      '../src/lib/androidtv-remote/pairing/PairingManager.js'
+      '~/lib/androidtv-remote/pairing/PairingManager.js'
     );
     const manager = new PairingManager(
       'localhost',
@@ -244,7 +244,7 @@ describe('PairingManager', () => {
   it('throws when certificates are missing before hashing', async () => {
     const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
     const { PairingManager } = await import(
-      '../src/lib/androidtv-remote/pairing/PairingManager.js'
+      '~/lib/androidtv-remote/pairing/PairingManager.js'
     );
     const manager = new PairingManager(
       'localhost',
@@ -266,7 +266,7 @@ describe('PairingManager', () => {
   it('logs unexpected messages when status is OK but no flags match', async () => {
     const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
     const { PairingManager } = await import(
-      '../src/lib/androidtv-remote/pairing/PairingManager.js'
+      '~/lib/androidtv-remote/pairing/PairingManager.js'
     );
     const manager = new PairingManager(
       'localhost',
@@ -293,7 +293,7 @@ describe('PairingManager', () => {
 
   it('converts hex strings to signed bytes', async () => {
     const { PairingManager } = await import(
-      '../src/lib/androidtv-remote/pairing/PairingManager.js'
+      '~/lib/androidtv-remote/pairing/PairingManager.js'
     );
     const manager = new PairingManager(
       'localhost',

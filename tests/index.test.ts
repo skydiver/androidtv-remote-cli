@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { MenuAction } from '../src/ui/menu';
+import type { MenuAction } from '~/ui/menu';
 
 const state = vi.hoisted(() => ({
   ensureHost: vi.fn(),
@@ -133,7 +133,7 @@ async function loadIndex(cliArgs: string[] = [], options: LoadOptions = {}): Pro
     }) as typeof process.on
   );
 
-  await vi.doMock('../src/setup', () => ({
+  await vi.doMock('~/setup', () => ({
     ensureHost: state.ensureHost,
     abortSetup: state.abortSetup,
   }));
@@ -144,18 +144,18 @@ async function loadIndex(cliArgs: string[] = [], options: LoadOptions = {}): Pro
     },
   }));
 
-  await vi.doMock('../src/settings', () => ({
+  await vi.doMock('~/settings', () => ({
     default: { path: state.settingsPath },
     getSetting: state.getSetting,
     setSetting: state.setSetting,
   }));
 
-  await vi.doMock('../src/debug', () => ({
+  await vi.doMock('~/debug', () => ({
     isDebugMode: state.isDebugMode,
     setDebugMode: state.setDebugMode,
   }));
 
-  await vi.doMock('../src/ui/menu', () => ({
+  await vi.doMock('~/ui/menu', () => ({
     default: class MockMenuUI {
       public readonly items;
       public readonly onAction;
@@ -199,7 +199,7 @@ async function loadIndex(cliArgs: string[] = [], options: LoadOptions = {}): Pro
     },
   }));
 
-  await vi.doMock('../src/ui/dpad-mode', () => ({
+  await vi.doMock('~/ui/dpad-mode', () => ({
     default: class MockDpadModeController {
       public readonly start;
       public readonly exit;
@@ -221,7 +221,7 @@ async function loadIndex(cliArgs: string[] = [], options: LoadOptions = {}): Pro
     },
   }));
 
-  await vi.doMock('../src/ui/help', () => ({
+  await vi.doMock('~/ui/help', () => ({
     default: class MockHelpScreenController {
       public readonly start;
       public readonly exit;
@@ -242,7 +242,7 @@ async function loadIndex(cliArgs: string[] = [], options: LoadOptions = {}): Pro
     },
   }));
 
-  await vi.doMock('../src/lib/androidtv-remote', () => {
+  await vi.doMock('~/lib/androidtv-remote', () => {
     class MockAndroidRemote {
       public readonly handlers = new Map<string, (payload: unknown) => unknown>();
       public readonly start = vi.fn(async () => {});
@@ -278,7 +278,7 @@ async function loadIndex(cliArgs: string[] = [], options: LoadOptions = {}): Pro
 
   let importError: unknown;
   try {
-    await import('../src/index');
+    await import('~/index');
   } catch (error) {
     importError = error;
   }
@@ -288,13 +288,13 @@ async function loadIndex(cliArgs: string[] = [], options: LoadOptions = {}): Pro
     logSpy.mockRestore();
     errorSpy.mockRestore();
     processOnSpy.mockRestore();
-    vi.unmock('../src/setup');
-    vi.unmock('../src/settings');
-    vi.unmock('../src/debug');
-    vi.unmock('../src/ui/menu');
-    vi.unmock('../src/ui/dpad-mode');
-    vi.unmock('../src/ui/help');
-    vi.unmock('../src/lib/androidtv-remote');
+    vi.unmock('~/setup');
+    vi.unmock('~/settings');
+    vi.unmock('~/debug');
+    vi.unmock('~/ui/menu');
+    vi.unmock('~/ui/dpad-mode');
+    vi.unmock('~/ui/help');
+    vi.unmock('~/lib/androidtv-remote');
     vi.unmock('../package.json');
     vi.resetModules();
   };
