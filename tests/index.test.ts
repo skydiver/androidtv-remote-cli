@@ -106,7 +106,9 @@ async function loadIndex(cliArgs: string[] = [], options: LoadOptions = {}): Pro
   state.abortSetup.mockImplementation((error) => {
     throw error instanceof Error ? error : new Error(String(error));
   });
-  state.getSetting.mockImplementation((key: string) => state.settingsStore[key as keyof typeof state.settingsStore]);
+  state.getSetting.mockImplementation(
+    (key: string) => state.settingsStore[key as keyof typeof state.settingsStore]
+  );
   state.setSetting.mockImplementation((key: string, value: unknown) => {
     state.settingsStore[key as keyof typeof state.settingsStore] = value as never;
   });
@@ -126,12 +128,13 @@ async function loadIndex(cliArgs: string[] = [], options: LoadOptions = {}): Pro
   }) as unknown as typeof process.exit);
   const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
   const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-  const processOnSpy = vi.spyOn(process, 'on').mockImplementation(
-    ((event: string, handler: (...args: unknown[]) => void) => {
-      state.processHandlers.set(event, handler);
-      return process;
-    }) as typeof process.on
-  );
+  const processOnSpy = vi.spyOn(process, 'on').mockImplementation(((
+    event: string,
+    handler: (...args: unknown[]) => void
+  ) => {
+    state.processHandlers.set(event, handler);
+    return process;
+  }) as typeof process.on);
 
   await vi.doMock('~/setup', () => ({
     ensureHost: state.ensureHost,
@@ -354,7 +357,9 @@ describe('index entrypoint', () => {
     expect((state.menuInstance as { start: ReturnType<typeof vi.fn> }).start).toHaveBeenCalled();
     expect(state.menuStatuses).toContain('Connected to device.');
 
-    const onAction = (state.menuInstance as { onAction: (action: string) => Promise<unknown> | unknown }).onAction;
+    const onAction = (
+      state.menuInstance as { onAction: (action: string) => Promise<unknown> | unknown }
+    ).onAction;
     await expect(onAction('mute')).resolves.toBe('Mute command sent.');
     await expect(onAction('power')).resolves.toBe('Power toggle sent.');
     await expect(onAction('home')).resolves.toBe('Home command sent.');
@@ -374,12 +379,12 @@ describe('index entrypoint', () => {
     await expect(onAction('unknown' as unknown as MenuAction)).resolves.toBeUndefined();
 
     remote.emit('volume', { playerModel: 'Living Room TV' });
-    expect((state.dpadInstance as { setHeaderLabel: ReturnType<typeof vi.fn> }).setHeaderLabel).toHaveBeenCalledWith(
-      'Living Room TV'
-    );
-    expect((state.menuInstance as { setHeaderLabel: ReturnType<typeof vi.fn> }).setHeaderLabel).toHaveBeenCalledWith(
-      'Living Room TV'
-    );
+    expect(
+      (state.dpadInstance as { setHeaderLabel: ReturnType<typeof vi.fn> }).setHeaderLabel
+    ).toHaveBeenCalledWith('Living Room TV');
+    expect(
+      (state.menuInstance as { setHeaderLabel: ReturnType<typeof vi.fn> }).setHeaderLabel
+    ).toHaveBeenCalledWith('Living Room TV');
 
     remote.emit('volume', {});
     expect(
@@ -390,12 +395,12 @@ describe('index entrypoint', () => {
     await flush();
     expect(state.menuStatuses).toContain('Pairing required. Enter the code to continue.');
     expect(state.menuStatuses).toContain('Pairing code sent. Waiting for device...');
-    expect(
-      (state.dpadInstance as { exit: ReturnType<typeof vi.fn> }).exit
-    ).toHaveBeenCalledWith(false);
-    expect(
-      (state.helpInstance as { exit: ReturnType<typeof vi.fn> }).exit
-    ).toHaveBeenCalledWith(false);
+    expect((state.dpadInstance as { exit: ReturnType<typeof vi.fn> }).exit).toHaveBeenCalledWith(
+      false
+    );
+    expect((state.helpInstance as { exit: ReturnType<typeof vi.fn> }).exit).toHaveBeenCalledWith(
+      false
+    );
     expect(
       (state.remoteInstance as { sendCode: ReturnType<typeof vi.fn> }).sendCode
     ).toHaveBeenCalledWith('2468');
@@ -407,7 +412,10 @@ describe('index entrypoint', () => {
   });
 
   it('handles pairing cancellation and exit command', async () => {
-    const ctx = await loadIndex([], { promptResponses: [{ reject: 'cancelled' }], exitShouldThrow: false });
+    const ctx = await loadIndex([], {
+      promptResponses: [{ reject: 'cancelled' }],
+      exitShouldThrow: false,
+    });
     expect(ctx.importError).toBeUndefined();
     const remote = state.remoteInstance as { emit: (event: string, payload?: unknown) => unknown };
 
@@ -416,12 +424,8 @@ describe('index entrypoint', () => {
     expect(ctx.exitSpy).toHaveBeenCalledWith(0);
 
     expect(state.menuStatuses).toContain('Pairing cancelled.');
-    expect(
-      (state.remoteInstance as { stop: ReturnType<typeof vi.fn> }).stop
-    ).toHaveBeenCalled();
-    expect(
-      (state.menuInstance as { stop: ReturnType<typeof vi.fn> }).stop
-    ).toHaveBeenCalled();
+    expect((state.remoteInstance as { stop: ReturnType<typeof vi.fn> }).stop).toHaveBeenCalled();
+    expect((state.menuInstance as { stop: ReturnType<typeof vi.fn> }).stop).toHaveBeenCalled();
 
     const ctx2 = await loadIndex([], { promptResponses: ['1357'], exitShouldThrow: false });
     expect(ctx2.importError).toBeUndefined();
@@ -438,19 +442,18 @@ describe('index entrypoint', () => {
     expect(menu.stop).toHaveBeenCalled();
     expect(dpad.exit).toHaveBeenCalledWith(false);
     expect(help.exit).toHaveBeenCalledWith(false);
-    expect(
-      (state.remoteInstance as { stop: ReturnType<typeof vi.fn> }).stop
-    ).toHaveBeenCalled();
-    const stopCallCount = (
-      state.remoteInstance as { stop: ReturnType<typeof vi.fn> }
-    ).stop.mock.calls.length;
+    expect((state.remoteInstance as { stop: ReturnType<typeof vi.fn> }).stop).toHaveBeenCalled();
+    const stopCallCount = (state.remoteInstance as { stop: ReturnType<typeof vi.fn> }).stop.mock
+      .calls.length;
     state.exitAppRef?.();
     expect(
       (state.remoteInstance as { stop: ReturnType<typeof vi.fn> }).stop.mock.calls.length
     ).toBe(stopCallCount);
 
     const statusCount = state.menuStatuses.length;
-    (state.remoteInstance as { emit: (event: string, payload?: unknown) => unknown }).emit('secret');
+    (state.remoteInstance as { emit: (event: string, payload?: unknown) => unknown }).emit(
+      'secret'
+    );
     await flush();
     expect(state.menuStatuses.length).toBe(statusCount);
 
@@ -483,18 +486,14 @@ describe('index entrypoint', () => {
     expect(exitHandler).toBeTypeOf('function');
     exitHandler?.();
     await flush();
-    expect(
-      (state.dpadInstance as { exit: ReturnType<typeof vi.fn> }).exit
-    ).toHaveBeenCalledWith(false);
-    expect(
-      (state.helpInstance as { exit: ReturnType<typeof vi.fn> }).exit
-    ).toHaveBeenCalledWith(false);
-    expect(
-      (state.menuInstance as { stop: ReturnType<typeof vi.fn> }).stop
-    ).toHaveBeenCalled();
-    expect(
-      (state.remoteInstance as { stop: ReturnType<typeof vi.fn> }).stop
-    ).toHaveBeenCalled();
+    expect((state.dpadInstance as { exit: ReturnType<typeof vi.fn> }).exit).toHaveBeenCalledWith(
+      false
+    );
+    expect((state.helpInstance as { exit: ReturnType<typeof vi.fn> }).exit).toHaveBeenCalledWith(
+      false
+    );
+    expect((state.menuInstance as { stop: ReturnType<typeof vi.fn> }).stop).toHaveBeenCalled();
+    expect((state.remoteInstance as { stop: ReturnType<typeof vi.fn> }).stop).toHaveBeenCalled();
     ctxExit.restore();
   });
 
@@ -505,9 +504,7 @@ describe('index entrypoint', () => {
     const remote = state.remoteInstance as { emit: (event: string) => unknown };
     remote.emit('ready');
     await flush();
-    expect(
-      (state.dpadInstance as { start: ReturnType<typeof vi.fn> }).start
-    ).toHaveBeenCalled();
+    expect((state.dpadInstance as { start: ReturnType<typeof vi.fn> }).start).toHaveBeenCalled();
     ctx.restore();
   });
 
@@ -517,9 +514,7 @@ describe('index entrypoint', () => {
     const remote = state.remoteInstance as { emit: (event: string) => unknown };
     remote.emit('ready');
     await flush();
-    expect(
-      (state.helpInstance as { start: ReturnType<typeof vi.fn> }).start
-    ).toHaveBeenCalled();
+    expect((state.helpInstance as { start: ReturnType<typeof vi.fn> }).start).toHaveBeenCalled();
     ctx.restore();
   });
 
@@ -559,15 +554,15 @@ describe('index entrypoint', () => {
     (state.helpInstance as { start: ReturnType<typeof vi.fn> }).start();
     remote.emit('secret');
     await flush();
-    expect(
-      (state.helpInstance as { exit: ReturnType<typeof vi.fn> }).exit
-    ).toHaveBeenCalledWith(false);
+    expect((state.helpInstance as { exit: ReturnType<typeof vi.fn> }).exit).toHaveBeenCalledWith(
+      false
+    );
 
     remote.emit('ready');
     await flush();
-    expect(
-      (state.helpInstance as { start: ReturnType<typeof vi.fn> }).start
-    ).toHaveBeenCalledTimes(2);
+    expect((state.helpInstance as { start: ReturnType<typeof vi.fn> }).start).toHaveBeenCalledTimes(
+      2
+    );
     ctx.restore();
 
     const ctx2 = await loadIndex([], {

@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 class MockTlsSocket extends EventEmitter {
   writes: unknown[] = [];
@@ -115,9 +115,7 @@ describe('PairingManager', () => {
 
   it('performs pairing handshake and resolves when connection closes cleanly', async () => {
     const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
-    const { PairingManager } = await import(
-      '~/lib/androidtv-remote/pairing/PairingManager.js'
-    );
+    const { PairingManager } = await import('~/lib/androidtv-remote/pairing/PairingManager.js');
     const manager = new PairingManager(
       'localhost',
       '6467',
@@ -150,16 +148,18 @@ describe('PairingManager', () => {
     await expect(startPromise).resolves.toBe(true);
     expect(secretSpy).toHaveBeenCalledTimes(1);
     expect(socket.destroyedWith).toBeUndefined();
-    expect(socket.writes).toEqual([Buffer.from('request'), Buffer.from('option'), Buffer.from('config')]);
+    expect(socket.writes).toEqual([
+      Buffer.from('request'),
+      Buffer.from('option'),
+      Buffer.from('config'),
+    ]);
     debugSpy.mockRestore();
   });
 
   it('rejects when pairing message status is not OK', async () => {
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
-    const { PairingManager } = await import(
-      '~/lib/androidtv-remote/pairing/PairingManager.js'
-    );
+    const { PairingManager } = await import('~/lib/androidtv-remote/pairing/PairingManager.js');
     const manager = new PairingManager(
       'localhost',
       '6467',
@@ -186,9 +186,7 @@ describe('PairingManager', () => {
 
   it('sendCode writes secret when checksum matches', async () => {
     const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
-    const { PairingManager } = await import(
-      '~/lib/androidtv-remote/pairing/PairingManager.js'
-    );
+    const { PairingManager } = await import('~/lib/androidtv-remote/pairing/PairingManager.js');
     const manager = new PairingManager(
       'localhost',
       '6467',
@@ -214,9 +212,7 @@ describe('PairingManager', () => {
 
   it('sendCode destroys connection when checksum mismatches', async () => {
     const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
-    const { PairingManager } = await import(
-      '~/lib/androidtv-remote/pairing/PairingManager.js'
-    );
+    const { PairingManager } = await import('~/lib/androidtv-remote/pairing/PairingManager.js');
     const manager = new PairingManager(
       'localhost',
       '6467',
@@ -243,9 +239,7 @@ describe('PairingManager', () => {
 
   it('throws when certificates are missing before hashing', async () => {
     const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
-    const { PairingManager } = await import(
-      '~/lib/androidtv-remote/pairing/PairingManager.js'
-    );
+    const { PairingManager } = await import('~/lib/androidtv-remote/pairing/PairingManager.js');
     const manager = new PairingManager(
       'localhost',
       '6467',
@@ -265,9 +259,7 @@ describe('PairingManager', () => {
 
   it('logs unexpected messages when status is OK but no flags match', async () => {
     const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
-    const { PairingManager } = await import(
-      '~/lib/androidtv-remote/pairing/PairingManager.js'
-    );
+    const { PairingManager } = await import('~/lib/androidtv-remote/pairing/PairingManager.js');
     const manager = new PairingManager(
       'localhost',
       '6467',
@@ -292,9 +284,7 @@ describe('PairingManager', () => {
   });
 
   it('converts hex strings to signed bytes', async () => {
-    const { PairingManager } = await import(
-      '~/lib/androidtv-remote/pairing/PairingManager.js'
-    );
+    const { PairingManager } = await import('~/lib/androidtv-remote/pairing/PairingManager.js');
     const manager = new PairingManager(
       'localhost',
       '6467',

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const protoState = vi.hoisted(() => {
   const enums = {
@@ -193,7 +193,9 @@ describe('RemoteMessageManager', () => {
     manager.createRemoteRemoteAppLinkLaunchRequest('link');
 
     expect(protoState.verify).toHaveBeenCalledTimes(5);
-    expect(debugSpy.mock.calls.some((call) => String(call[0]).includes('Create Remote '))).toBe(true);
+    expect(debugSpy.mock.calls.some((call) => String(call[0]).includes('Create Remote '))).toBe(
+      true
+    );
     debugSpy.mockRestore();
   });
 

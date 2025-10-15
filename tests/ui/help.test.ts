@@ -1,7 +1,7 @@
 import readline from 'readline';
-import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
-import type MenuUI from '~/ui/menu';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import HelpScreenController from '~/ui/help';
+import type MenuUI from '~/ui/menu';
 
 type KeyHandler = (chunk: string, key: readline.Key) => void;
 
@@ -146,9 +146,7 @@ describe('HelpScreenController', () => {
 
     controller.start();
     expect(controller.isActive()).toBe(true);
-    expect(statusMessages).toContain(
-      'Viewing help screen. Press Esc or Enter to return to menu.'
-    );
+    expect(statusMessages).toContain('Viewing help screen. Press Esc or Enter to return to menu.');
 
     expect(menu.stop).toHaveBeenCalledTimes(1);
     expect(menu.setStatus).toHaveBeenCalledWith(

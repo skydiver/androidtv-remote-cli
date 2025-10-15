@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import { describe, expect, it, beforeEach, afterEach, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mockState = vi.hoisted(() => ({
   generateFull: vi.fn(() => ({ key: 'generated-key', cert: 'generated-cert' })),

@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const forgeMocks = vi.hoisted(() => {
   const certificate = {
@@ -71,13 +71,11 @@ describe('CertificateGenerator', () => {
   it('creates a certificate with expected metadata', async () => {
     const now = new Date('2024-01-01T00:00:00.000Z');
     vi.setSystemTime(now);
-    const randomBuffer = Buffer.from(
-      '0102030405060708090a0b0c0d0e0f10111213',
-      'hex'
-    ).subarray(0, 19);
-    const randomBytesSpy = vi
-      .spyOn(crypto, 'randomBytes')
-      .mockReturnValue(randomBuffer);
+    const randomBuffer = Buffer.from('0102030405060708090a0b0c0d0e0f10111213', 'hex').subarray(
+      0,
+      19
+    );
+    const randomBytesSpy = vi.spyOn(crypto, 'randomBytes').mockReturnValue(randomBuffer);
 
     const { CertificateGenerator } = await import(
       '~/lib/androidtv-remote/certificate/CertificateGenerator.js'
@@ -96,9 +94,7 @@ describe('CertificateGenerator', () => {
     expect(forgeMocks.api.pki.createCertificate).toHaveBeenCalled();
     expect(forgeMocks.certificate.publicKey).toBe(forgeMocks.keyPair.publicKey);
     expect(randomBytesSpy).toHaveBeenCalledWith(19);
-    expect(forgeMocks.certificate.serialNumber).toBe(
-      '01' + randomBuffer.toString('hex')
-    );
+    expect(forgeMocks.certificate.serialNumber).toBe('01' + randomBuffer.toString('hex'));
     expect(forgeMocks.certificate.validity.notBefore).toEqual(now);
     expect(forgeMocks.certificate.validity.notAfter?.getUTCFullYear()).toBe(2099);
     expect(forgeMocks.certificate.setSubject).toHaveBeenCalledWith([
@@ -115,11 +111,7 @@ describe('CertificateGenerator', () => {
       forgeMocks.sha256Instance
     );
     expect(result).toEqual({ cert: 'PEM_CERT', key: 'PEM_KEY' });
-    expect(forgeMocks.api.pki.certificateToPem).toHaveBeenCalledWith(
-      forgeMocks.certificate
-    );
-    expect(forgeMocks.api.pki.privateKeyToPem).toHaveBeenCalledWith(
-      forgeMocks.keyPair.privateKey
-    );
+    expect(forgeMocks.api.pki.certificateToPem).toHaveBeenCalledWith(forgeMocks.certificate);
+    expect(forgeMocks.api.pki.privateKeyToPem).toHaveBeenCalledWith(forgeMocks.keyPair.privateKey);
   });
 });

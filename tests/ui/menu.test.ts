@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
 import readline from 'readline';
-import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Mock } from 'vitest';
 
 vi.mock('enquirer', () => {
@@ -60,8 +60,14 @@ beforeEach(() => {
 afterEach(() => {
   vi.restoreAllMocks();
   Object.defineProperty(process, 'stdin', { configurable: true, value: originalStdin });
-  Object.defineProperty(process.stdout, 'write', { configurable: true, value: originalStdoutWrite });
-  Object.defineProperty(process.stdout, 'isTTY', { configurable: true, value: originalStdoutIsTTY });
+  Object.defineProperty(process.stdout, 'write', {
+    configurable: true,
+    value: originalStdoutWrite,
+  });
+  Object.defineProperty(process.stdout, 'isTTY', {
+    configurable: true,
+    value: originalStdoutIsTTY,
+  });
 });
 
 const createMenu = (items: MenuItem[] = menuItems) => {
@@ -162,20 +168,20 @@ describe('MenuUI', () => {
     expect(actionSpy).toHaveBeenCalledWith('power');
   });
 
-
   it('handles escape key by triggering exit action', async () => {
     const { menu, notifications } = createMenu();
-    (menu as unknown as { handleKeypressBound: (input: string, key: readline.Key) => void }).handleKeypressBound(
-      '',
-      { name: 'escape' } as readline.Key,
-    );
+    (
+      menu as unknown as { handleKeypressBound: (input: string, key: readline.Key) => void }
+    ).handleKeypressBound('', { name: 'escape' } as readline.Key);
     await flushAsync();
     expect(notifications).toContain('exit');
   });
 
   it('handles enter key by triggering current selection', async () => {
     const { menu, notifications } = createMenu();
-    const handler = (menu as unknown as { handleKeypressBound: (input: string, key: readline.Key) => void }).handleKeypressBound.bind(menu);
+    const handler = (
+      menu as unknown as { handleKeypressBound: (input: string, key: readline.Key) => void }
+    ).handleKeypressBound.bind(menu);
     handler('', { name: 'return' } as readline.Key);
     handler('', { name: 'enter' } as readline.Key);
     await flushAsync();
@@ -195,7 +201,9 @@ describe('MenuUI', () => {
     const { menu } = createMenu();
     (menu as unknown as { running: boolean }).running = true;
     (menu as unknown as { processingSelection: boolean }).processingSelection = true;
-    await (menu as unknown as { triggerAction: (action: MenuAction) => Promise<void> }).triggerAction('dpad');
+    await (
+      menu as unknown as { triggerAction: (action: MenuAction) => Promise<void> }
+    ).triggerAction('dpad');
     expect(menu.getStatus()).toBe('Select an option');
   });
 
@@ -207,12 +215,13 @@ describe('MenuUI', () => {
       },
     });
     (menu as unknown as { running: boolean }).running = true;
-    await (menu as unknown as { triggerAction: (action: MenuAction) => Promise<void> }).triggerAction('dpad');
+    await (
+      menu as unknown as { triggerAction: (action: MenuAction) => Promise<void> }
+    ).triggerAction('dpad');
     expect(menu.getStatus()).toBe('Error: Unknown error');
   });
 
   it('sets error status when action throws', async () => {
-
     const menu = new MenuUI({
       items: menuItems,
       onAction: () => {
@@ -220,10 +229,11 @@ describe('MenuUI', () => {
       },
     });
     (menu as unknown as { running: boolean }).running = true;
-    await (menu as unknown as { triggerAction: (action: MenuAction) => Promise<void> }).triggerAction('dpad');
+    await (
+      menu as unknown as { triggerAction: (action: MenuAction) => Promise<void> }
+    ).triggerAction('dpad');
     expect(menu.getStatus()).toBe('Error: boom');
   });
-
 
   it('does nothing when stopping if not running', () => {
     const { menu } = createMenu();
@@ -253,7 +263,6 @@ describe('MenuUI', () => {
     expect(internal.padRight('XY', 0)).toBe('');
   });
 
-
   it('truncates long strings when rendering', () => {
     const { menu } = createMenu([{ label: 'Item', action: 'home' }]);
     menu.setStatus('X' * 100);
@@ -277,7 +286,8 @@ describe('MenuUI', () => {
     const item: MenuItem = { label: 'L', action: 'home', shortcut: 'h' };
 
     const originalMin = Math.min;
-    (Math as unknown as { min: (...values: number[]) => number }).min = ((...values: number[]) => values[0]);
+    (Math as unknown as { min: (...values: number[]) => number }).min = (...values: number[]) =>
+      values[0];
     const labelSpaceZero = internal.formatItemLabel(item, '(H)', 3);
     expect(labelSpaceZero.length).toBe(3);
     (Math as unknown as { min: (...values: number[]) => number }).min = originalMin;
@@ -297,7 +307,9 @@ describe('MenuUI', () => {
       },
     });
     (menu as unknown as { running: boolean }).running = true;
-    await (menu as unknown as { triggerAction: (action: MenuAction) => Promise<void> }).triggerAction('dpad');
+    await (
+      menu as unknown as { triggerAction: (action: MenuAction) => Promise<void> }
+    ).triggerAction('dpad');
     expect(menu.getStatus()).toBe('Error: Unknown error');
   });
 

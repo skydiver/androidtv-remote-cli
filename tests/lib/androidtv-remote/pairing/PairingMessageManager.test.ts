@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const protoState = vi.hoisted(() => {
   const enums = {
@@ -158,7 +158,8 @@ describe('PairingMessageManager', () => {
         preferredRole: protoState.enums.RoleType.ROLE_TYPE_INPUT,
         inputEncodings: [
           {
-            type: protoState.enums['pairing.PairingEncoding.EncodingType'].ENCODING_TYPE_HEXADECIMAL,
+            type: protoState.enums['pairing.PairingEncoding.EncodingType']
+              .ENCODING_TYPE_HEXADECIMAL,
             symbolLength: 6,
           },
         ],

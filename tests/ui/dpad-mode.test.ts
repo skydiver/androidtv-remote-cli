@@ -1,5 +1,5 @@
 import readline from 'readline';
-import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const commandMocks = vi.hoisted(() => ({
   backCommand: vi.fn(),
@@ -21,8 +21,8 @@ vi.mock('~/lib/androidtv-remote', () => ({
   AndroidRemote: vi.fn(),
 }));
 
-import DpadModeController from '~/ui/dpad-mode';
 import { setDebugMode } from '~/debug';
+import DpadModeController from '~/ui/dpad-mode';
 
 type KeyHandler = (chunk: string, key: readline.Key) => void;
 
@@ -133,9 +133,9 @@ describe('DpadModeController', () => {
     const emitSpy = vi.spyOn(readline, 'emitKeypressEvents').mockImplementation(() => {});
 
     controller.start();
-    const rawHandler = stdinStub.on.mock.calls.find(
-      (call) => call[0] === 'keypress'
-    )?.[1] as KeyHandler | undefined;
+    const rawHandler = stdinStub.on.mock.calls.find((call) => call[0] === 'keypress')?.[1] as
+      | KeyHandler
+      | undefined;
     rawHandler?.('', undefined as unknown as readline.Key);
     expect(controller.isActive()).toBe(true);
 

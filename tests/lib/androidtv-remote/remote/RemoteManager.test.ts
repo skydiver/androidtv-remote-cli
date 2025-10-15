@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 class MockTlsSocket extends EventEmitter {
   writes: unknown[] = [];
@@ -97,14 +97,10 @@ describe('RemoteManager', () => {
 
   const getManager = async () => {
     const { RemoteManager } = await import('~/lib/androidtv-remote/remote/RemoteManager.js');
-    return new RemoteManager(
-      'host',
-      6466,
-      {
-        key: 'key',
-        cert: 'cert',
-      }
-    );
+    return new RemoteManager('host', 6466, {
+      key: 'key',
+      cert: 'cert',
+    });
   };
 
   const emitDelimitedMessage = (socket: MockTlsSocket, message: Record<string, unknown>) => {
