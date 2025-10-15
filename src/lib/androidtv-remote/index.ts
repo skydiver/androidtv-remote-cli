@@ -36,9 +36,22 @@ export class AndroidRemote extends EventEmitter {
       );
       this.pairingManager.on('secret', () => this.emit('secret'));
 
-      const paired = await this.pairingManager.start().catch((error) => {
+      let paired;
+      try {
+        paired = await this.pairingManager.start();
+      } catch (error) {
         console.error(error);
-      });
+        return;
+      }
+
+      if (typeof paired === 'function') {
+        try {
+          await paired();
+        } catch (error) {
+          console.error(error);
+        }
+        return;
+      }
 
       if (!paired) {
         return;
@@ -59,11 +72,14 @@ export class AndroidRemote extends EventEmitter {
 
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    const started = await this.remoteManager.start().catch((error) => {
+    try {
+      const remoteStartResult = await this.remoteManager.start();
+      if (typeof remoteStartResult === 'function') {
+        await remoteStartResult();
+      }
+    } catch (error) {
       console.error(error);
-    });
-
-    return started;
+    }
   }
 
   sendCode(code) {
