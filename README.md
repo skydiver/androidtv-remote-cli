@@ -52,6 +52,8 @@ The build step runs esbuild, injects a shebang with the current `node` path, and
 ./build/tvrc
 ```
 
+Copy `build/tvrc` to a directory on your `PATH` (for example `~/bin` or `/usr/local/bin`) to invoke `tvrc` globally without specifying the build folder.
+
 ---
 
 ## Running from Source
@@ -150,12 +152,13 @@ To reset pairing, delete the settings file (see `tvrc config` for the precise pa
 | `pnpm dev`          | Watch-mode TypeScript execution with hot reload.   |
 | `pnpm build`        | Produce the bundled executable in `build/tvrc`.    |
 | `pnpm clean`        | Remove the `build` directory.                      |
-| `pnpm test`         | Execute Vitest suites (none included yet).         |
+| `pnpm test`         | Run Vitest suites for CLI, UI, pairing, and remote layers. |
+| `pnpm test:coverage`| Generate a coverage report with Vitest (`coverage/`). |
 | `pnpm lint:check`   | Biome static analysis.                             |
 | `pnpm lint:fix`     | Apply Biome autofixes.                             |
 | `pnpm lint:format`  | Format source files with Biome.                    |
 
-Vitest is configured but no tests ship with the repo; add your own under `src/` as needed.
+Vitest test files live under `tests/` and mirror the `src/` structure, covering the interactive UI, pairing flows, and the vendored Android TV remote implementation. Use `pnpm test:coverage` to audit coverage output in `coverage/`.
 
 ---
 
