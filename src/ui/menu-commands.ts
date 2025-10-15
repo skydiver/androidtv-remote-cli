@@ -3,11 +3,7 @@ import MenuUI from './menu';
 
 export type ExitExecutor = () => void;
 
-const sendKeyCommand = (
-  remote: AndroidRemote,
-  key: RemoteKeyCode,
-  label: string
-): string => {
+const sendKeyCommand = (remote: AndroidRemote, key: RemoteKeyCode, label: string): string => {
   remote.sendKey(key, RemoteDirection.SHORT);
   return `${label} command sent.`;
 };

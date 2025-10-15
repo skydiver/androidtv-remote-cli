@@ -211,7 +211,8 @@ export class MenuUI {
   }
 
   private render(): void {
-    const headerText = this.headerLabel && this.headerLabel.length > 0 ? this.headerLabel : 'Android TV Remote';
+    const headerText =
+      this.headerLabel && this.headerLabel.length > 0 ? this.headerLabel : 'Android TV Remote';
     const menuTitle = headerText;
     const instructions = '↑/↓ Move  Enter Select  Ctrl+C Exit';
     const debugLine = this.debugStatus;
@@ -292,7 +293,9 @@ export class MenuUI {
     const gapWidth = Math.max(labelSpace - paddedLabel.length, 1);
     const gap = ' '.repeat(gapWidth);
     const line = `${paddedLabel}${gap}${effectiveShortcut}`;
-    return line.length > availableWidth ? line.slice(0, availableWidth) : this.padRight(line, availableWidth);
+    return line.length > availableWidth
+      ? line.slice(0, availableWidth)
+      : this.padRight(line, availableWidth);
   }
 
   private truncate(text: string, width: number): string {

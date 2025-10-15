@@ -35,10 +35,10 @@ class PairingMessageManager {
   }
 
   create(payload) {
-    let errMsg = this.PairingMessage.verify(payload);
+    const errMsg = this.PairingMessage.verify(payload);
     if (errMsg) throw Error(errMsg);
 
-    let message = this.PairingMessage.create(payload);
+    const message = this.PairingMessage.create(payload);
 
     return this.PairingMessage.encodeDelimited(message).finish();
   }
@@ -98,5 +98,5 @@ class PairingMessageManager {
     return this.PairingMessage.decodeDelimited(buffer);
   }
 }
-let pairingMessageManager = new PairingMessageManager();
+const pairingMessageManager = new PairingMessageManager();
 export { pairingMessageManager };

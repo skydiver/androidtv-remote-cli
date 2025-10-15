@@ -5,6 +5,9 @@ export default defineConfig({
   plugins: [tsconfigPaths()],
   test: {
     globals: true,
-    include: ['src/**/*.test.ts'],
+    include: ['src/**/*.test.ts', 'tests/**/*.test.ts'],
+    coverage: {
+      exclude: ['esbuild.config.ts', 'vite.config.ts', 'src/types/proto.d.ts'],
+    },
   },
 });

@@ -14,7 +14,7 @@ class RemoteManager extends EventEmitter {
 
   async start() {
     return new Promise((resolve, reject) => {
-      let options = {
+      const options = {
         key: this.certs.key,
         cert: this.certs.cert,
         port: this.port,
@@ -42,11 +42,11 @@ class RemoteManager extends EventEmitter {
       });
 
       this.client.on('data', (data) => {
-        let buffer = Buffer.from(data);
+        const buffer = Buffer.from(data);
         this.chunks = Buffer.concat([this.chunks, buffer]);
 
         if (this.chunks.length > 0 && this.chunks.readInt8(0) === this.chunks.length - 1) {
-          let message = remoteMessageManager.parse(this.chunks);
+          const message = remoteMessageManager.parse(this.chunks);
 
           if (!message.remotePingRequest) {
             //console.debug(this.host + " Receive : " + Array.from(this.chunks));

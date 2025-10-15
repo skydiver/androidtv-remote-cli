@@ -6,7 +6,9 @@ export function setDebugMode(enabled: boolean) {
   if (enabled) {
     console.debug = originalDebug;
   } else {
-    console.debug = () => {};
+    console.debug = (..._args: unknown[]) => {
+      /* debug disabled */
+    };
   }
 }
 

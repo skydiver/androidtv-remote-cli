@@ -1,6 +1,6 @@
 {
   "name": "androidtv-remote-cli",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "description": "Android TV remote control CLI",
   "license": "MIT",
   "author": {
@@ -16,9 +16,10 @@
     "lint:check": "biome check .",
     "lint:fix": "biome check --fix .",
     "lint:format": "biome format --write .",
+    "type:check": "tsc --noEmit",
     "start": "tsx src/index.ts",
-    "test": "vitest src",
-    "test:coverage": "vitest run --coverage"
+    "test": "vitest tests src",
+    "test:coverage": "vitest run --coverage tests src"
   },
   "dependencies": {
     "conf": "^15.0.2",
@@ -51,8 +52,6 @@
     "pnpm": "10.0.0"
   },
   "pnpm": {
-    "onlyBuiltDependencies": [
-      "esbuild"
-    ]
+    "onlyBuiltDependencies": ["esbuild"]
   }
 }

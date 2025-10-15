@@ -1,8 +1,7 @@
 import enquirer from 'enquirer';
 import { getSetting, setSetting } from './settings';
 
-const ipv4Pattern =
-  /^(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)){3}$/;
+const ipv4Pattern = /^(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)){3}$/;
 
 export async function ensureHost(): Promise<string> {
   const existingHost = getSetting<string>('host');

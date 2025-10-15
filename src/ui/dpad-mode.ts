@@ -1,21 +1,21 @@
 import readline from 'readline';
+import { isDebugMode } from '../debug';
 import { AndroidRemote } from '../lib/androidtv-remote';
 import MenuUI from './menu';
 import {
+  type DigitKey,
+  backCommand,
   dpadDownCommand,
   dpadLeftCommand,
   dpadRightCommand,
   dpadUpCommand,
-  selectCommand,
+  homeCommand,
   muteCommand,
+  numberCommand,
+  selectCommand,
   volumeDownCommand,
   volumeUpCommand,
-  backCommand,
-  homeCommand,
-  numberCommand,
-  type DigitKey,
 } from './menu-commands';
-import { isDebugMode } from '../debug';
 
 export interface DpadModeOptions {
   remote: AndroidRemote;
@@ -39,7 +39,9 @@ class DpadModeController {
     }
 
     if (!process.stdin.isTTY || !process.stdout.isTTY) {
-      this.options.menu.setStatus(this.options.formatStatus('D-pad mode requires a TTY environment.'));
+      this.options.menu.setStatus(
+        this.options.formatStatus('D-pad mode requires a TTY environment.')
+      );
       if (!this.options.menu.isRunning()) {
         this.options.menu.start();
       }
