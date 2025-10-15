@@ -98,7 +98,7 @@ describe('MenuUI', () => {
   it('requires a TTY to start', () => {
     stdin.isTTY = false;
     Object.defineProperty(process.stdout, 'isTTY', { configurable: true, value: false });
-    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
 
     const { menu } = createMenu();
     menu.start();

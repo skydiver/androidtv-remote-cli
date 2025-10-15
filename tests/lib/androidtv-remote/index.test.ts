@@ -198,7 +198,7 @@ describe('AndroidRemote', () => {
   it('logs and stops when pairing start throws', async () => {
     vi.useFakeTimers();
     const { AndroidRemote } = await import('~/lib/androidtv-remote/index.js');
-    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
     mockState.pairingStartResult = () => Promise.reject(new Error('pairing failure'));
     mockState.remoteStartResult = true;
@@ -216,7 +216,7 @@ describe('AndroidRemote', () => {
   it('logs and continues when remote manager start throws', async () => {
     vi.useFakeTimers();
     const { AndroidRemote } = await import('~/lib/androidtv-remote/index.js');
-    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
     mockState.pairingStartResult = true;
     mockState.remoteStartResult = () => Promise.reject(new Error('remote failure'));
@@ -235,10 +235,10 @@ describe('AndroidRemote', () => {
     vi.useFakeTimers();
     const { AndroidRemote } = await import('~/lib/androidtv-remote/index.js');
     const error = new Error('pairing rejection');
-    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
     const rejection = Promise.reject(error);
-    rejection.catch(() => {});
+    rejection.catch(() => undefined);
     mockState.pairingStartResult = rejection;
 
     const remote = new AndroidRemote('host', {} as never);
@@ -256,7 +256,7 @@ describe('AndroidRemote', () => {
     vi.useFakeTimers();
     const { AndroidRemote } = await import('~/lib/androidtv-remote/index.js');
     const cleanup = vi.fn().mockResolvedValue(undefined);
-    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
     mockState.pairingStartResult = Promise.resolve(cleanup);
 

@@ -75,7 +75,6 @@ vi.mock('~/lib/androidtv-remote/remote/RemoteMessageManager.js', () => ({
 
 describe('RemoteManager', () => {
   let debugSpy: ReturnType<typeof vi.spyOn>;
-  let infoSpy: ReturnType<typeof vi.spyOn>;
   let logSpy: ReturnType<typeof vi.spyOn>;
   let errorSpy: ReturnType<typeof vi.spyOn>;
 
@@ -85,10 +84,10 @@ describe('RemoteManager', () => {
     tlsState.sockets.length = 0;
     Object.values(remoteMessages.create).forEach((fn) => fn.mockClear());
     remoteMessages.parse.mockReset();
-    debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
-    infoSpy = vi.spyOn(console, 'info').mockImplementation(() => {});
-    logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-    errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => undefined);
+    vi.spyOn(console, 'info').mockImplementation(() => undefined);
+    logSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
+    errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
   });
 
   afterEach(() => {

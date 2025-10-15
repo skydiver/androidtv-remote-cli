@@ -114,7 +114,7 @@ describe('PairingManager', () => {
   });
 
   it('performs pairing handshake and resolves when connection closes cleanly', async () => {
-    const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
+    const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => undefined);
     const { PairingManager } = await import('~/lib/androidtv-remote/pairing/PairingManager.js');
     const manager = new PairingManager(
       'localhost',
@@ -157,8 +157,8 @@ describe('PairingManager', () => {
   });
 
   it('rejects when pairing message status is not OK', async () => {
-    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-    const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => undefined);
     const { PairingManager } = await import('~/lib/androidtv-remote/pairing/PairingManager.js');
     const manager = new PairingManager(
       'localhost',
@@ -185,7 +185,7 @@ describe('PairingManager', () => {
   });
 
   it('sendCode writes secret when checksum matches', async () => {
-    const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
+    const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => undefined);
     const { PairingManager } = await import('~/lib/androidtv-remote/pairing/PairingManager.js');
     const manager = new PairingManager(
       'localhost',
@@ -197,7 +197,7 @@ describe('PairingManager', () => {
       'Service'
     );
     const socket = new MockTlsSocket();
-    socket.on('error', () => {});
+    socket.on('error', () => undefined);
     manager['client'] = socket as unknown as ReturnType<typeof tlsConnect>;
 
     cryptoState.finalizeResult = '00';
@@ -211,7 +211,7 @@ describe('PairingManager', () => {
   });
 
   it('sendCode destroys connection when checksum mismatches', async () => {
-    const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
+    const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => undefined);
     const { PairingManager } = await import('~/lib/androidtv-remote/pairing/PairingManager.js');
     const manager = new PairingManager(
       'localhost',
@@ -223,7 +223,7 @@ describe('PairingManager', () => {
       'Service'
     );
     const socket = new MockTlsSocket();
-    socket.on('error', () => {});
+    socket.on('error', () => undefined);
     manager['client'] = socket as unknown as ReturnType<typeof tlsConnect>;
 
     cryptoState.finalizeResult = '01';
@@ -238,7 +238,7 @@ describe('PairingManager', () => {
   });
 
   it('throws when certificates are missing before hashing', async () => {
-    const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
+    const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => undefined);
     const { PairingManager } = await import('~/lib/androidtv-remote/pairing/PairingManager.js');
     const manager = new PairingManager(
       'localhost',
@@ -258,7 +258,7 @@ describe('PairingManager', () => {
   });
 
   it('logs unexpected messages when status is OK but no flags match', async () => {
-    const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
+    const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => undefined);
     const { PairingManager } = await import('~/lib/androidtv-remote/pairing/PairingManager.js');
     const manager = new PairingManager(
       'localhost',

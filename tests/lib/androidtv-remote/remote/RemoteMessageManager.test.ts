@@ -108,7 +108,7 @@ describe('RemoteMessageManager', () => {
   });
 
   it('parses definitions and stores system information', async () => {
-    const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
+    const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => undefined);
     const manager = await loadManager();
 
     expect(fsState.readFileSync).not.toHaveBeenCalled();
@@ -120,7 +120,7 @@ describe('RemoteMessageManager', () => {
   });
 
   it('creates remote configure message with resolved manufacturer/model', async () => {
-    const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
+    const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => undefined);
     const manager = await loadManager();
 
     const payload = manager.createRemoteConfigure(622, 'Model', 'Vendor', 1, '1');
@@ -145,7 +145,7 @@ describe('RemoteMessageManager', () => {
   });
 
   it('throws when payload verification fails', async () => {
-    const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
+    const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => undefined);
     const manager = await loadManager();
     protoState.verify.mockReturnValueOnce('invalid payload');
 
@@ -154,7 +154,7 @@ describe('RemoteMessageManager', () => {
   });
 
   it('creates remote set active message', async () => {
-    const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
+    const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => undefined);
     const manager = await loadManager();
 
     manager.createRemoteSetActive(true);
@@ -168,7 +168,7 @@ describe('RemoteMessageManager', () => {
   });
 
   it('suppresses debug logs for ping responses', async () => {
-    const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
+    const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => undefined);
     const manager = await loadManager();
 
     manager.createRemotePingResponse(42);
@@ -183,7 +183,7 @@ describe('RemoteMessageManager', () => {
   });
 
   it('creates key inject and other message types', async () => {
-    const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
+    const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => undefined);
     const manager = await loadManager();
 
     manager.createRemoteKeyInject('SHORT', 'POWER');
@@ -200,7 +200,7 @@ describe('RemoteMessageManager', () => {
   });
 
   it('parses buffers using protobuf decoder', async () => {
-    const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
+    const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => undefined);
     const manager = await loadManager();
     const buffer = Uint8Array.from([9, 9, 9]);
 
@@ -212,7 +212,7 @@ describe('RemoteMessageManager', () => {
   });
 
   it('falls back to filesystem when proto import fails', async () => {
-    const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
+    const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => undefined);
     vi.resetModules();
     vi.doMock('~/lib/androidtv-remote/remote/remotemessage.proto', () => ({
       get default() {
@@ -232,7 +232,7 @@ describe('RemoteMessageManager', () => {
   });
 
   it('rethrows unexpected errors during proto import', async () => {
-    const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
+    const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => undefined);
     vi.resetModules();
     vi.doMock('~/lib/androidtv-remote/remote/remotemessage.proto', () => ({
       get default() {

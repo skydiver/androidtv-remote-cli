@@ -126,8 +126,8 @@ async function loadIndex(cliArgs: string[] = [], options: LoadOptions = {}): Pro
       throw new Error(`exit:${code ?? 0}`);
     }
   }) as unknown as typeof process.exit);
-  const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-  const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+  const logSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
+  const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
   const processOnSpy = vi.spyOn(process, 'on').mockImplementation(((
     event: string,
     handler: (...args: unknown[]) => void
@@ -248,7 +248,7 @@ async function loadIndex(cliArgs: string[] = [], options: LoadOptions = {}): Pro
   await vi.doMock('~/lib/androidtv-remote', () => {
     class MockAndroidRemote {
       public readonly handlers = new Map<string, (payload: unknown) => unknown>();
-      public readonly start = vi.fn(async () => {});
+      public readonly start = vi.fn(async () => undefined);
       public readonly stop = vi.fn();
       public readonly getCertificate = vi.fn(() => 'cert-from-remote');
       public readonly sendCode = vi.fn();

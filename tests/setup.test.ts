@@ -12,9 +12,10 @@ vi.mock('enquirer', () => ({
 vi.mock('conf', () => {
   const store = new Map<string, unknown>();
 
-  class MockConf<T extends Record<string, unknown>> {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    constructor(_options?: unknown) {}
+  class MockConf {
+    constructor(options?: unknown) {
+      void options;
+    }
 
     set(key: string, value: unknown) {
       store.set(key, value);
@@ -57,7 +58,7 @@ describe('ensureHost', () => {
   });
 
   it('prompts when host is missing and validates input', async () => {
-    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
 
     promptMock.mockImplementation(async (questions: unknown) => {
       const question = Array.isArray(questions) ? questions[0] : questions;
@@ -87,7 +88,7 @@ describe('abortSetup', () => {
   it('logs an error and exits with code 1', async () => {
     const { abortSetup } = await importSetup();
 
-    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation(((code?: number) => {
       throw new Error(`exit:${code ?? 'unknown'}`);
     }) as unknown as typeof process.exit);
@@ -104,7 +105,7 @@ describe('abortSetup', () => {
   it('falls back to default message for non-error reasons', async () => {
     const { abortSetup } = await importSetup();
 
-    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation(((code?: number) => {
       throw new Error(`exit:${code ?? 'unknown'}`);
     }) as unknown as typeof process.exit);

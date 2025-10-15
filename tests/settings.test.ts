@@ -1,11 +1,12 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('conf', () => {
   const store = new Map<string, unknown>();
 
-  class MockConf<T extends Record<string, unknown>> {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    constructor(_options?: unknown) {}
+  class MockConf {
+    constructor(options?: unknown) {
+      void options;
+    }
 
     set(key: string, value: unknown) {
       store.set(key, value);

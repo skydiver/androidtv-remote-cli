@@ -22,7 +22,7 @@ vi.mock('~/lib/androidtv-remote', () => ({
 }));
 
 import { setDebugMode } from '~/debug';
-import DpadModeController from '~/ui/dpad-mode';
+import DpadModeController, { type DpadModeOptions } from '~/ui/dpad-mode';
 
 type KeyHandler = (chunk: string, key: readline.Key) => void;
 
@@ -64,8 +64,8 @@ const createController = () => {
   const remote = { id: 'remote' };
 
   const controller = new DpadModeController({
-    remote: remote as unknown as any,
-    menu: menu as unknown as any,
+    remote: remote as unknown as DpadModeOptions['remote'],
+    menu: menu as unknown as DpadModeOptions['menu'],
     exitApp,
     formatStatus,
   });
@@ -101,8 +101,8 @@ beforeEach(() => {
   setDebugMode(false);
   Object.values(commandMocks).forEach((mock) => mock.mockReset());
 
-  consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-  consoleClearSpy = vi.spyOn(console, 'clear').mockImplementation(() => {});
+  consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
+  consoleClearSpy = vi.spyOn(console, 'clear').mockImplementation(() => undefined);
 });
 
 afterEach(() => {
@@ -130,7 +130,7 @@ describe('DpadModeController', () => {
 
   it('initializes key listeners and processes controls', () => {
     const { controller, menu, exitApp, remote } = createController();
-    const emitSpy = vi.spyOn(readline, 'emitKeypressEvents').mockImplementation(() => {});
+    const emitSpy = vi.spyOn(readline, 'emitKeypressEvents').mockImplementation(() => undefined);
 
     controller.start();
     const rawHandler = stdinStub.on.mock.calls.find((call) => call[0] === 'keypress')?.[1] as
@@ -195,7 +195,7 @@ describe('DpadModeController', () => {
 
   it('logs command descriptions when debug mode is enabled', () => {
     const { controller } = createController();
-    vi.spyOn(readline, 'emitKeypressEvents').mockImplementation(() => {});
+    vi.spyOn(readline, 'emitKeypressEvents').mockImplementation(() => undefined);
 
     setDebugMode(true);
     controller.start();
@@ -228,7 +228,7 @@ describe('DpadModeController', () => {
 
   it('ignores repeated start calls when already active', () => {
     const { controller } = createController();
-    vi.spyOn(readline, 'emitKeypressEvents').mockImplementation(() => {});
+    vi.spyOn(readline, 'emitKeypressEvents').mockImplementation(() => undefined);
 
     controller.start();
     controller.start();

@@ -61,8 +61,8 @@ beforeEach(() => {
     value: stdoutStub,
   });
 
-  consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-  consoleClearSpy = vi.spyOn(console, 'clear').mockImplementation(() => {});
+  consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
+  consoleClearSpy = vi.spyOn(console, 'clear').mockImplementation(() => undefined);
 });
 
 afterEach(() => {
@@ -107,7 +107,7 @@ const createController = () => {
 describe('HelpScreenController', () => {
   it('starts only once when already active', () => {
     const { controller, menu } = createController();
-    const emitSpy = vi.spyOn(readline, 'emitKeypressEvents').mockImplementation(() => {});
+    const emitSpy = vi.spyOn(readline, 'emitKeypressEvents').mockImplementation(() => undefined);
 
     controller.start();
     controller.start();
@@ -142,7 +142,7 @@ describe('HelpScreenController', () => {
 
   it('renders help content and handles keypresses', () => {
     const { controller, menu, exitApp, statusMessages } = createController();
-    const emitSpy = vi.spyOn(readline, 'emitKeypressEvents').mockImplementation(() => {});
+    const emitSpy = vi.spyOn(readline, 'emitKeypressEvents').mockImplementation(() => undefined);
 
     controller.start();
     expect(controller.isActive()).toBe(true);
